@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      StudyFlow - Atur Tugas, Jadwal & Progres Belajar dalam Satu Tempat
+    </title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "sans-serif"],
+            },
+            colors: {
+              primary: "#4F8EF7",
+              "soft-blue": "#EAF3FF",
+              lavender: "#A78BFA",
+              mint: "#6DD6B0",
+              yellow: "#FFD166",
+              bgMain: "#F8FAFF",
+              surface: "#FFFFFF",
+              textMain: "#25324B",
+              textSecondary: "#718096",
+              borderClr: "#E5EAF3",
+            },
+            boxShadow: {
+              soft: "0 10px 30px -5px rgba(79, 142, 247, 0.08)",
+              card: "0 4px 20px rgba(0, 0, 0, 0.03)",
+              glow: "0 0 25px rgba(79, 142, 247, 0.25)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8faff;
+        color: #25324b;
+        overflow-x: hidden;
+      }
+
+      /* Element Fade In Animation on Scroll */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Glassmorphism Blur Effects */
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f8faff;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-bgMain text-textMain antialiased flex flex-col min-h-screen selection:bg-soft-blue selection:text-primary"
+  >
+    <header
+      class="sticky top-0 z-40 w-full glass-nav border-b border-borderClr transition-all duration-200"
+    >
+      <div
+        class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between"
+      >
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group">
+          <div
+            class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-primary/30 group-hover:scale-105 transition-transform duration-200"
+          >
+            <i data-lucide="book-open-check" class="w-5 h-5"></i>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-textMain"
+            >Study<span class="text-primary">Flow</span></span
+          >
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a
+            href="#fitur"
+            class="text-sm font-semibold text-textSecondary hover:text-primary transition-colors"
+            >Fitur Utama</a
+          >
+          <a
+            href="#preview"
+            class="text-sm font-semibold text-textSecondary hover:text-primary transition-colors"
+            >Preview UI</a
+          >
+          <a
+            href="#cara-kerja"
+            class="text-sm font-semibold text-textSecondary hover:text-primary transition-colors"
+            >Cara Kerja</a
+          >
+        </nav>
+
+        <!-- Desktop Action Buttons -->
+        <div class="hidden md:flex items-center gap-3">
+          <a
+            href="#"
+            class="px-5 py-2.5 rounded-xl text-sm font-semibold text-textMain hover:bg-soft-blue hover:text-primary transition-all"
+            >Login</a
+          >
+          <a
+            href="#"
+            class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary hover:bg-blue-600 shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all"
+            >Get Started</a
+          >
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden p-2 rounded-xl text-textMain hover:bg-soft-blue focus:outline-none"
+          aria-label="Buka Menu"
+        >
+          <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+          <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Nav Drawer -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden border-b border-borderClr bg-surface px-4 pt-3 pb-6 space-y-4 shadow-lg"
+      >
+        <a
+          href="#fitur"
+          class="mobile-nav-link block px-3 py-2 rounded-lg text-base font-semibold text-textSecondary hover:bg-soft-blue hover:text-primary transition-colors"
+          >Fitur Utama</a
+        >
+        <a
+          href="#preview"
+          class="mobile-nav-link block px-3 py-2 rounded-lg text-base font-semibold text-textSecondary hover:bg-soft-blue hover:text-primary transition-colors"
+          >Preview UI</a
+        >
+        <a
+          href="#cara-kerja"
+          class="mobile-nav-link block px-3 py-2 rounded-lg text-base font-semibold text-textSecondary hover:bg-soft-blue hover:text-primary transition-colors"
+          >Cara Kerja</a
+        >
+        <div class="pt-4 border-t border-borderClr flex flex-col gap-2">
+          <a
+            href="#"
+            class="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-textMain bg-bgMain hover:bg-soft-blue hover:text-primary transition-all"
+            >Login</a
+          >
+          <a
+            href="#"
+            class="w-full text-center px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-primary hover:bg-blue-600 shadow-md transition-all"
+            >Get Started</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <section
+      class="relative pt-12 pb-20 md:py-24 bg-gradient-to-b from-soft-blue/60 via-bgMain to-bgMain overflow-hidden"
+    >
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center"
+        >
+          <!-- Left Content Column -->
+          <div class="lg:col-span-6 text-center lg:text-left reveal">
+            <!-- Badge Lavender -->
+            <div
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-lavender/20 text-indigo-700 text-xs font-bold mb-6 border border-lavender/30"
+            >
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-lavender"></i>
+              <span>Platform Manajemen Belajar #1</span>
+            </div>
+
+            <!-- Headline -->
+            <h1
+              class="text-4xl sm:text-5xl lg:text-5xl font-extrabold text-textMain tracking-tight leading-tight mb-6"
+            >
+              Atur Tugas, Jadwal & Progres Belajar dalam
+              <span class="text-primary relative inline-block"
+                >Satu Tempat<svg
+                  class="absolute w-full h-2.5 -bottom-1 left-0 text-primary/30"
+                  viewBox="0 0 100 20"
+                  preserveAspectRatio="none"
+                >
+                  <path
+                    d="M0 15 Q 50 0 100 15"
+                    stroke="currentColor"
+                    stroke-width="8"
+                    fill="none"
+                  /></svg
+              ></span>
+            </h1>
+
+            <!-- Subheadline -->
+            <p
+              class="text-base sm:text-lg text-textSecondary mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+            >
+              StudyFlow dirancang khusus untuk siswa dan mahasiswa agar bebas
+              dari stres deadline, memantau kemajuan belajar, dan mengelola
+              catatan dengan lebih efektif.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div
+              class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8"
+            >
+              <a
+                href="#"
+                class="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-white bg-primary hover:bg-blue-600 shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
+              >
+                <span>Mulai Gratis Now</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+              <a
+                href="#"
+                class="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-textMain bg-surface border border-borderClr hover:bg-soft-blue hover:text-primary transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <i
+                  data-lucide="user-check"
+                  class="w-4 h-4 text-textSecondary"
+                ></i>
+                <span>Login Akun</span>
+              </a>
+            </div>
+
+            <!-- Micro Social Proof -->
+            <div
+              class="flex items-center justify-center lg:justify-start gap-3 text-xs text-textSecondary"
+            >
+              <div class="flex -space-x-2">
+                <div
+                  class="w-7 h-7 rounded-full bg-blue-500 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                >
+                  A
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                >
+                  B
+                </div>
+                <div
+                  class="w-7 h-7 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                >
+                  C
+                </div>
+              </div>
+              <span
+                >Dipercaya oleh <strong>5,000+</strong> pelajar di
+                Indonesia</span
+              >
+            </div>
+          </div>
+
+          <!-- Right Column: Hero CSS UI Mockup -->
+          <div class="lg:col-span-6 reveal">
+            <div class="relative mx-auto max-w-md lg:max-w-none">
+              <!-- Background Glow behind mockup -->
+              <div
+                class="absolute -inset-1.5 bg-gradient-to-r from-primary via-lavender to-mint rounded-3xl blur-xl opacity-30 animate-pulse"
+              ></div>
+
+              <!-- Mockup App Window -->
+              <div
+                class="relative bg-surface rounded-2xl border border-borderClr shadow-2xl overflow-hidden"
+              >
+                <!-- Window Top Bar -->
+                <div
+                  class="bg-bgMain px-4 py-3 border-b border-borderClr flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="w-3 h-3 rounded-full bg-red-400 inline-block"
+                    ></span>
+                    <span
+                      class="w-3 h-3 rounded-full bg-yellow inline-block"
+                    ></span>
+                    <span
+                      class="w-3 h-3 rounded-full bg-mint inline-block"
+                    ></span>
+                  </div>
+                  <div
+                    class="text-[11px] font-semibold text-textSecondary bg-surface px-3 py-1 rounded-full border border-borderClr"
+                  >
+                    studyflow.app/dashboard
+                  </div>
+                  <div class="w-12"></div>
+                </div>
+
+                <!-- Window Body -->
+                <div class="p-4 sm:p-6 grid grid-cols-12 gap-4">
+                  <!-- Mini Sidebar -->
+                  <div
+                    class="col-span-3 border-r border-borderClr pr-3 hidden sm:flex flex-col gap-3"
+                  >
+                    <div
+                      class="flex items-center gap-2 p-2 bg-soft-blue rounded-lg text-primary text-xs font-bold"
+                    >
+                      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                      <span>Utama</span>
+                    </div>
+                    <div
+                      class="flex items-center gap-2 p-2 text-textSecondary hover:bg-bgMain rounded-lg text-xs font-medium"
+                    >
+                      <i data-lucide="check-square" class="w-4 h-4"></i>
+                      <span>Tugas</span>
+                    </div>
+                    <div
+                      class="flex items-center gap-2 p-2 text-textSecondary hover:bg-bgMain rounded-lg text-xs font-medium"
+                    >
+                      <i data-lucide="calendar" class="w-4 h-4"></i>
+                      <span>Jadwal</span>
+                    </div>
+                    <div
+                      class="flex items-center gap-2 p-2 text-textSecondary hover:bg-bgMain rounded-lg text-xs font-medium"
+                    >
+                      <i data-lucide="file-text" class="w-4 h-4"></i>
+                      <span>Catatan</span>
+                    </div>
+                  </div>
+
+                  <!-- Main Dashboard Content -->
+                  <div class="col-span-12 sm:col-span-9 space-y-4">
+                    <!-- Header Stat -->
+                    <div
+                      class="p-3 bg-bgMain rounded-xl border border-borderClr"
+                    >
+                      <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-xs font-semibold text-textMain"
+                          >Progres Mingguan</span
+                        >
+                        <span class="text-xs font-bold text-mint"
+                          >85% Selesai</span
+                        >
+                      </div>
+                      <div
+                        class="w-full bg-slate-200 h-2 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="bg-mint h-full rounded-full"
+                          style="width: 85%"
+                        ></div>
+                      </div>
+                    </div>
+
+                    <!-- Task Cards Area -->
+                    <div class="space-y-2.5">
+                      <span
+                        class="text-[11px] font-bold uppercase tracking-wider text-textSecondary"
+                        >Tugas Mendatang</span
+                      >
+
+                      <!-- Card 1 (Deadline urgent) -->
+                      <div
+                        class="p-3 rounded-xl border border-borderClr bg-surface flex items-center justify-between shadow-sm hover:border-primary/50 transition-colors"
+                      >
+                        <div class="flex items-center gap-3">
+                          <div
+                            class="w-5 h-5 rounded border-2 border-primary flex items-center justify-center"
+                          >
+                            <i
+                              data-lucide="check"
+                              class="w-3 h-3 text-primary opacity-0"
+                            ></i>
+                          </div>
+                          <div>
+                            <h4 class="text-xs font-bold text-textMain">
+                              Laporan Praktikum Fisika
+                            </h4>
+                            <p class="text-[10px] text-textSecondary">
+                              Modul 4 - Magnetisme
+                            </p>
+                          </div>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold bg-yellow/20 text-amber-800 border border-yellow/40"
+                        >
+                          Hari Ini
+                        </span>
+                      </div>
+
+                      <!-- Card 2 -->
+                      <div
+                        class="p-3 rounded-xl border border-borderClr bg-surface flex items-center justify-between shadow-sm"
+                      >
+                        <div class="flex items-center gap-3">
+                          <div
+                            class="w-5 h-5 rounded border-2 border-borderClr flex items-center justify-center"
+                          ></div>
+                          <div>
+                            <h4 class="text-xs font-bold text-textMain">
+                              Makalah Pemrograman Web
+                            </h4>
+                            <p class="text-[10px] text-textSecondary">
+                              Studi Kasus Tailwind
+                            </p>
+                          </div>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold bg-bgMain text-textSecondary border border-borderClr"
+                        >
+                          Besok
+                        </span>
+                      </div>
+
+                      <!-- Card 3 (Completed) -->
+                      <div
+                        class="p-3 rounded-xl border border-borderClr bg-surface/60 flex items-center justify-between opacity-75"
+                      >
+                        <div class="flex items-center gap-3">
+                          <div
+                            class="w-5 h-5 rounded bg-mint flex items-center justify-center text-white"
+                          >
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                          </div>
+                          <div>
+                            <h4
+                              class="text-xs font-bold text-textMain line-through"
+                            >
+                              Kuis Matematika Diskrit
+                            </h4>
+                            <p class="text-[10px] text-textSecondary">
+                              Bab 3 Graph
+                            </p>
+                          </div>
+                        </div>
+                        <span
+                          class="px-2 py-0.5 rounded text-[10px] font-semibold bg-mint/20 text-emerald-800 border border-mint/30"
+                        >
+                          Selesai
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fitur" class="py-20 bg-surface border-y border-borderClr">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+          <span
+            class="text-primary text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-soft-blue inline-block mb-3"
+            >Fitur Andalan</span
+          >
+          <h2
+            class="text-3xl sm:text-4xl font-extrabold text-textMain tracking-tight"
+          >
+            Segala yang Anda Butuhkan untuk Belajar Efektif
+          </h2>
+          <p class="text-textSecondary mt-4 text-base">
+            Semua alat bantu belajar terbaik yang disederhanakan dalam satu
+            ekosistem efisien.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Fitur 1 -->
+          <div
+            class="p-6 rounded-2xl bg-bgMain border border-borderClr hover:border-primary/50 hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group reveal"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-soft-blue flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300"
+            >
+              <i data-lucide="check-square" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-textMain mb-2">
+              Manajemen Tugas
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Kelola tenggat waktu, berikan prioritas, dan kelompokkan tugas
+              akademik Anda agar tidak ada yang terlewat.
+            </p>
+          </div>
+
+          <!-- Fitur 2 -->
+          <div
+            class="p-6 rounded-2xl bg-bgMain border border-borderClr hover:border-primary/50 hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group reveal"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-lavender/20 flex items-center justify-center text-lavender mb-6 group-hover:bg-lavender group-hover:text-white transition-colors duration-300"
+            >
+              <i data-lucide="calendar" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-textMain mb-2">Jadwal Belajar</h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Atur sesi belajar interaktif dengan kalender terintegrasi dan
+              sistem pengingat otomatis yang cerdas.
+            </p>
+          </div>
+
+          <!-- Fitur 3 -->
+          <div
+            class="p-6 rounded-2xl bg-bgMain border border-borderClr hover:border-primary/50 hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group reveal"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-yellow/20 flex items-center justify-center text-amber-600 mb-6 group-hover:bg-yellow group-hover:text-textMain transition-colors duration-300"
+            >
+              <i data-lucide="file-text" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-textMain mb-2">
+              Catatan Terorganisir
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Simpan rangkuman kuliah dan ide penting dengan rapi, terhubung
+              langsung ke mata kuliah terkait.
+            </p>
+          </div>
+
+          <!-- Fitur 4 -->
+          <div
+            class="p-6 rounded-2xl bg-bgMain border border-borderClr hover:border-primary/50 hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 group reveal"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-mint/20 flex items-center justify-center text-emerald-600 mb-6 group-hover:bg-mint group-hover:text-white transition-colors duration-300"
+            >
+              <i data-lucide="line-chart" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-lg font-bold text-textMain mb-2">
+              Progres Belajar
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Pantau statistik pencapaian, tingkat penyelesaian tugas, dan
+              konsistensi jam belajar Anda secara realtime.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="py-20 bg-bgMain">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+        <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+          <span
+            class="text-primary text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-soft-blue inline-block mb-3"
+            >Preview Antarmuka</span
+          >
+          <h2
+            class="text-3xl sm:text-4xl font-extrabold text-textMain tracking-tight"
+          >
+            Desain Intuitif untuk Kenyamanan Belajar
+          </h2>
+        </div>
+
+        <!-- Preview Block 1: Left Text, Right Mockup -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-5 space-y-4 reveal">
+            <div
+              class="w-10 h-10 rounded-lg bg-soft-blue text-primary flex items-center justify-center font-bold"
+            >
+              01
+            </div>
+            <h3 class="text-2xl font-bold text-textMain">
+              Daftar Tugas Berdasarkan Prioritas
+            </h3>
+            <p class="text-textSecondary leading-relaxed">
+              Kelompokkan tugas berdasarkan status pengerjaan, prioritas tinggi,
+              hingga tenggat waktu yang kritikal. Ubah status hanya dalam sekali
+              klik.
+            </p>
+            <ul class="space-y-2 pt-2 text-sm text-textMain font-medium">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Filter tugas otomatis
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Indikator batas waktu berwarna
+              </li>
+            </ul>
+          </div>
+          <div class="lg:col-span-7 reveal">
+            <div
+              class="p-6 rounded-2xl bg-surface border border-borderClr shadow-card"
+            >
+              <div
+                class="flex items-center justify-between pb-4 border-b border-borderClr mb-4"
+              >
+                <span class="font-bold text-sm text-textMain"
+                  >List Tugas Akademik</span
+                >
+                <span
+                  class="text-xs bg-soft-blue text-primary font-semibold px-2.5 py-1 rounded-lg"
+                  >3 Aktif</span
+                >
+              </div>
+              <div class="space-y-3">
+                <div
+                  class="p-3.5 bg-bgMain rounded-xl border border-borderClr flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 rounded border-2 border-primary"></div>
+                    <span class="text-xs font-semibold"
+                      >Tugas Statistika Lanjutan</span
+                    >
+                  </div>
+                  <span
+                    class="text-[11px] font-bold px-2 py-0.5 bg-yellow/30 text-amber-800 rounded"
+                    >Deadline 2 Jam</span
+                  >
+                </div>
+                <div
+                  class="p-3.5 bg-bgMain rounded-xl border border-borderClr flex items-center justify-between"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-4 h-4 rounded border-2 border-borderClr"
+                    ></div>
+                    <span class="text-xs font-semibold"
+                      >Review Jurnal AI & Etika</span
+                    >
+                  </div>
+                  <span
+                    class="text-[11px] font-semibold px-2 py-0.5 bg-surface text-textSecondary rounded border border-borderClr"
+                    >3 Hari Lagi</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Block 2: Right Text, Left Mockup -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 order-2 lg:order-1 reveal">
+            <div
+              class="p-6 rounded-2xl bg-surface border border-borderClr shadow-card"
+            >
+              <div
+                class="flex items-center justify-between pb-4 border-b border-borderClr mb-4"
+              >
+                <span class="font-bold text-sm text-textMain"
+                  >Jadwal Mingguan (Oktober 2026)</span
+                >
+                <div class="flex gap-1">
+                  <span class="p-1 rounded bg-bgMain text-xs text-textSecondary"
+                    >&lt;</span
+                  >
+                  <span class="p-1 rounded bg-bgMain text-xs text-textSecondary"
+                    >&gt;</span
+                  >
+                </div>
+              </div>
+              <div class="grid grid-cols-5 gap-2 text-center text-xs">
+                <div class="p-2 bg-soft-blue text-primary rounded-lg font-bold">
+                  Sen<br /><span class="text-[10px]">19</span>
+                </div>
+                <div class="p-2 bg-bgMain rounded-lg font-medium">
+                  Sel<br /><span class="text-[10px]">20</span>
+                </div>
+                <div class="p-2 bg-bgMain rounded-lg font-medium">
+                  Rab<br /><span class="text-[10px]">21</span>
+                </div>
+                <div class="p-2 bg-bgMain rounded-lg font-medium">
+                  Kam<br /><span class="text-[10px]">22</span>
+                </div>
+                <div class="p-2 bg-bgMain rounded-lg font-medium">
+                  Jum<br /><span class="text-[10px]">23</span>
+                </div>
+              </div>
+              <div
+                class="mt-4 p-3 bg-soft-blue/50 border border-primary/20 rounded-xl flex items-center gap-3"
+              >
+                <i data-lucide="clock" class="w-5 h-5 text-primary"></i>
+                <div>
+                  <h4 class="text-xs font-bold text-textMain">
+                    10:00 - 12:30 WIB
+                  </h4>
+                  <p class="text-[11px] text-textSecondary">
+                    Kelompok Belajar Algoritma
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-5 order-1 lg:order-2 space-y-4 reveal">
+            <div
+              class="w-10 h-10 rounded-lg bg-lavender/20 text-lavender flex items-center justify-center font-bold"
+            >
+              02
+            </div>
+            <h3 class="text-2xl font-bold text-textMain">
+              Kalender & Jadwal Interaktif
+            </h3>
+            <p class="text-textSecondary leading-relaxed">
+              Visualisasikan seluruh agenda akademik Anda. Terintegrasi langsung
+              dengan waktu perkuliahan, ujian, dan kelompok belajar.
+            </p>
+            <ul class="space-y-2 pt-2 text-sm text-textMain font-medium">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Tampilan kalender fleksibel
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Sinkronisasi ke pengingat lokal
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Preview Block 3: Left Text, Right Mockup -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-5 space-y-4 reveal">
+            <div
+              class="w-10 h-10 rounded-lg bg-mint/20 text-emerald-600 flex items-center justify-center font-bold"
+            >
+              03
+            </div>
+            <h3 class="text-2xl font-bold text-textMain">
+              Statistik Progres Realtime
+            </h3>
+            <p class="text-textSecondary leading-relaxed">
+              Dapatkan motivasi belajar harian dengan melihat grafik
+              perkembangan dan pencapaian target mingguan Anda secara terukur.
+            </p>
+            <ul class="space-y-2 pt-2 text-sm text-textMain font-medium">
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Grafik performa belajar harian
+              </li>
+              <li class="flex items-center gap-2">
+                <i data-lucide="check-circle2" class="w-4 h-4 text-mint"></i>
+                Laporan ringkasan bulanan
+              </li>
+            </ul>
+          </div>
+          <div class="lg:col-span-7 reveal">
+            <div
+              class="p-6 rounded-2xl bg-surface border border-borderClr shadow-card"
+            >
+              <div
+                class="flex items-center justify-between pb-4 border-b border-borderClr mb-4"
+              >
+                <span class="font-bold text-sm text-textMain"
+                  >Ringkasan Produktivitas</span
+                >
+                <span class="text-xs text-mint font-bold">+12% Minggu Ini</span>
+              </div>
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div
+                  class="p-3 bg-bgMain rounded-xl text-center border border-borderClr"
+                >
+                  <span class="text-[10px] text-textSecondary block"
+                    >Selesai</span
+                  >
+                  <span class="text-lg font-extrabold text-primary">24</span>
+                </div>
+                <div
+                  class="p-3 bg-bgMain rounded-xl text-center border border-borderClr"
+                >
+                  <span class="text-[10px] text-textSecondary block"
+                    >Jam Belajar</span
+                  >
+                  <span class="text-lg font-extrabold text-lavender">18j</span>
+                </div>
+                <div
+                  class="p-3 bg-bgMain rounded-xl text-center border border-borderClr"
+                >
+                  <span class="text-[10px] text-textSecondary block"
+                    >Streak</span
+                  >
+                  <span class="text-lg font-extrabold text-amber-500"
+                    >7 Hari</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="cara-kerja" class="py-20 bg-surface border-t border-borderClr">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+          <span
+            class="text-primary text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-soft-blue inline-block mb-3"
+            >Langkah Mudah</span
+          >
+          <h2
+            class="text-3xl sm:text-4xl font-extrabold text-textMain tracking-tight"
+          >
+            Cara Kerja StudyFlow
+          </h2>
+          <p class="text-textSecondary mt-4 text-base">
+            Hanya butuh 3 langkah sederhana untuk mulai merapikan kehidupan
+            belajar Anda.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          <!-- Step 1 -->
+          <div
+            class="p-8 rounded-2xl bg-bgMain border border-borderClr text-center relative reveal"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-primary text-white text-xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30"
+            >
+              1
+            </div>
+            <h3 class="text-xl font-bold text-textMain mb-3">
+              Buat Akun Gratis
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Daftar dalam waktu kurang dari 1 menit tanpa perlu kartu kredit.
+              Akses langsung seluruh fitur dasar.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div
+            class="p-8 rounded-2xl bg-bgMain border border-borderClr text-center relative reveal"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-lavender text-white text-xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-lavender/30"
+            >
+              2
+            </div>
+            <h3 class="text-xl font-bold text-textMain mb-3">
+              Input Tugas & Jadwal
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Masukkan mata kuliah, deadline tugas, dan catatan penting ke dalam
+              sistem terintegrasi kami.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div
+            class="p-8 rounded-2xl bg-bgMain border border-borderClr text-center relative reveal"
+          >
+            <div
+              class="w-14 h-14 rounded-2xl bg-mint text-white text-xl font-bold flex items-center justify-center mx-auto mb-6 shadow-lg shadow-mint/30"
+            >
+              3
+            </div>
+            <h3 class="text-xl font-bold text-textMain mb-3">
+              Pantau & Capai Target
+            </h3>
+            <p class="text-sm text-textSecondary leading-relaxed">
+              Selesaikan tugas dengan lebih teratur, hindari belajar sistem
+              semalam suntuk, dan capai nilai impian.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 bg-bgMain">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="rounded-3xl bg-primary text-white p-8 sm:p-12 lg:p-16 text-center relative overflow-hidden shadow-glow reveal"
+        >
+          <!-- Decorative Circles -->
+          <div
+            class="absolute -top-12 -left-12 w-48 h-48 bg-white/10 rounded-full blur-2xl"
+          ></div>
+          <div
+            class="absolute -bottom-12 -right-12 w-48 h-48 bg-lavender/30 rounded-full blur-2xl"
+          ></div>
+
+          <div class="relative z-10 max-w-2xl mx-auto space-y-6">
+            <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Siap Belajar Lebih Terstruktur Hari Ini?
+            </h2>
+            <p class="text-blue-100 text-base sm:text-lg">
+              Bergabunglah dengan ribuan siswa dan mahasiswa lainnya yang telah
+              meningkatkan produktivitas belajar mereka.
+            </p>
+            <div class="pt-4 flex flex-col sm:flex-row justify-center gap-4">
+              <a
+                href="#"
+                class="px-8 py-3.5 rounded-xl font-bold text-primary bg-white hover:bg-soft-blue shadow-lg transition-all text-center"
+              >
+                Get Started Gratis
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-auto bg-surface border-t border-borderClr py-12">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-8 border-b border-borderClr"
+        >
+          <!-- Logo & Tagline -->
+          <div class="space-y-3">
+            <a href="#" class="flex items-center gap-2.5">
+              <div
+                class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white"
+              >
+                <i data-lucide="book-open-check" class="w-4 h-4"></i>
+              </div>
+              <span class="text-lg font-bold tracking-tight text-textMain"
+                >Study<span class="text-primary">Flow</span></span
+              >
+            </a>
+            <p class="text-xs text-textSecondary max-w-sm">
+              Platform manajemen belajar terpadu untuk membantu pelajar meraih
+              potensi maksimal tanpa stres.
+            </p>
+          </div>
+
+          <!-- Footer Links -->
+          <div
+            class="flex flex-wrap gap-8 text-sm font-medium text-textSecondary"
+          >
+            <div class="space-y-2">
+              <h4
+                class="text-xs font-bold text-textMain uppercase tracking-wider"
+              >
+                Produk
+              </h4>
+              <ul class="space-y-1.5 text-xs">
+                <li>
+                  <a href="#fitur" class="hover:text-primary transition-colors"
+                    >Fitur</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#preview"
+                    class="hover:text-primary transition-colors"
+                    >Preview UI</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#cara-kerja"
+                    class="hover:text-primary transition-colors"
+                    >Cara Kerja</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="space-y-2">
+              <h4
+                class="text-xs font-bold text-textMain uppercase tracking-wider"
+              >
+                Legal
+              </h4>
+              <ul class="space-y-1.5 text-xs">
+                <li>
+                  <button
+                    id="open-privacy-btn"
+                    class="hover:text-primary transition-colors text-left"
+                  >
+                    Kebijakan Privasi
+                  </button>
+                </li>
+                <li>
+                  <button
+                    id="open-terms-btn"
+                    class="hover:text-primary transition-colors text-left"
+                  >
+                    Syarat & Ketentuan
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copyright -->
+        <div
+          class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-textSecondary gap-4"
+        >
+          <p>
+            &copy; <span id="year-span">2026</span> StudyFlow Inc. Hak Cipta
+            Dilindungi.
+          </p>
+          <div class="flex gap-4">
+            <a href="#" class="hover:text-primary"
+              ><i data-lucide="twitter" class="w-4 h-4"></i
+            ></a>
+            <a href="#" class="hover:text-primary"
+              ><i data-lucide="instagram" class="w-4 h-4"></i
+            ></a>
+            <a href="#" class="hover:text-primary"
+              ><i data-lucide="github" class="w-4 h-4"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div
+      id="privacy-modal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity"
+    >
+      <div
+        class="bg-surface rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-borderClr animate-in fade-in zoom-in duration-200"
+      >
+        <div
+          class="p-6 border-b border-borderClr flex justify-between items-center"
+        >
+          <h3 class="text-lg font-bold text-textMain flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-5 h-5 text-primary"></i>
+            Kebijakan Privasi
+          </h3>
+          <button
+            class="close-modal-btn p-1 text-textSecondary hover:text-textMain rounded-lg hover:bg-bgMain"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div
+          class="p-6 overflow-y-auto space-y-4 text-sm text-textSecondary leading-relaxed"
+        >
+          <p class="font-semibold text-textMain">
+            Terakhir Diperbarui: Oktober 2026
+          </p>
+          <p>
+            Di StudyFlow, kami sangat menghargai privasi Anda. Dokumen Kebijakan
+            Privasi ini menjelaskan jenis informasi yang kami kumpulkan dan
+            bagaimana kami menggunakannya.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">
+            1. Informasi yang Kami Kumpulkan
+          </h4>
+          <p>
+            Kami hanya mengumpulkan informasi akun dasar seperti nama, alamat
+            email, dan data jadwal/tugas yang Anda masukkan sendiri untuk
+            kepentingan fungsi aplikasi.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">2. Keamanan Data</h4>
+          <p>
+            Data Anda disimpan secara aman dan tidak akan pernah dijual atau
+            dibagikan kepada pihak ketiga untuk keperluan pemasaran tanpa izin
+            Anda.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">3. Penggunaan Cookie</h4>
+          <p>
+            Kami menggunakan cookie sesi dasar untuk menjaga status login Anda
+            tetap aktif dan meningkatkan pengalaman navigasi.
+          </p>
+        </div>
+        <div class="p-4 border-t border-borderClr flex justify-end">
+          <button
+            class="close-modal-btn px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-blue-600 transition-colors"
+          >
+            Saya Mengerti
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div
+      id="terms-modal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity"
+    >
+      <div
+        class="bg-surface rounded-2xl max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl border border-borderClr animate-in fade-in zoom-in duration-200"
+      >
+        <div
+          class="p-6 border-b border-borderClr flex justify-between items-center"
+        >
+          <h3 class="text-lg font-bold text-textMain flex items-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-primary"></i> Syarat
+            & Ketentuan
+          </h3>
+          <button
+            class="close-modal-btn p-1 text-textSecondary hover:text-textMain rounded-lg hover:bg-bgMain"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div
+          class="p-6 overflow-y-auto space-y-4 text-sm text-textSecondary leading-relaxed"
+        >
+          <p class="font-semibold text-textMain">
+            Terakhir Diperbarui: Oktober 2026
+          </p>
+          <p>
+            Dengan mengakses dan menggunakan platform StudyFlow, Anda menyetujui
+            untuk terikat oleh ketentuan layanan berikut.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">1. Penggunaan Layanan</h4>
+          <p>
+            StudyFlow disediakan khusus untuk penggunaan personal dalam
+            mengelola kegiatan belajar. Anda bertanggung jawab penuh atas
+            kerahasiaan kata sandi akun Anda.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">
+            2. Batasan Tanggung Jawab
+          </h4>
+          <p>
+            StudyFlow berupaya menyediakan layanan 24/7 tanpa gangguan, namun
+            tidak bertanggung jawab atas kerugian akibat kehilangan data karena
+            kesalahan pengguna.
+          </p>
+          <h4 class="font-bold text-textMain pt-2">3. Perubahan Ketentuan</h4>
+          <p>
+            Kami berhak memperbarui syarat dan ketentuan ini sewaktu-waktu
+            dengan pemberitahuan melalui platform.
+          </p>
+        </div>
+        <div class="p-4 border-t border-borderClr flex justify-end">
+          <button
+            class="close-modal-btn px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-blue-600 transition-colors"
+          >
+            Setuju & Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // 1. Inisialisasi Ikon Lucide
+        lucide.createIcons();
+
+        // 2. Tampilkan Tahun Otomatis di Footer
+        document.getElementById("year-span").textContent =
+          new Date().getFullYear();
+
+        // 3. Mobile Menu Toggle Logic
+        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const menuIcon = document.getElementById("menu-icon");
+        const closeIcon = document.getElementById("close-icon");
+        const mobileNavLinks = document.querySelectorAll(".mobile-nav-link");
+
+        function toggleMobileMenu() {
+          const isHidden = mobileMenu.classList.contains("hidden");
+          if (isHidden) {
+            mobileMenu.classList.remove("hidden");
+            menuIcon.classList.add("hidden");
+            closeIcon.classList.remove("hidden");
+          } else {
+            mobileMenu.classList.add("hidden");
+            menuIcon.classList.remove("hidden");
+            closeIcon.classList.add("hidden");
+          }
+        }
+
+        mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+
+        mobileNavLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            if (!mobileMenu.classList.contains("hidden")) {
+              toggleMobileMenu();
+            }
+          });
+        });
+
+        // 4. Modal Logic (Privacy Policy & Terms)
+        const privacyModal = document.getElementById("privacy-modal");
+        const termsModal = document.getElementById("terms-modal");
+        const openPrivacyBtn = document.getElementById("open-privacy-btn");
+        const openTermsBtn = document.getElementById("open-terms-btn");
+        const closeModalBtns = document.querySelectorAll(".close-modal-btn");
+
+        function openModal(modal) {
+          modal.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeModal(modal) {
+          modal.classList.add("hidden");
+          document.body.style.overflow = "auto";
+        }
+
+        openPrivacyBtn.addEventListener("click", () => openModal(privacyModal));
+        openTermsBtn.addEventListener("click", () => openModal(termsModal));
+
+        closeModalBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            closeModal(privacyModal);
+            closeModal(termsModal);
+          });
+        });
+
+        // Tutup modal jika mengklik diluar modal card
+        [privacyModal, termsModal].forEach((modal) => {
+          modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+              closeModal(modal);
+            }
+          });
+        });
+
+        // Tutup modal dengan tombol Escape (ESC)
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            closeModal(privacyModal);
+            closeModal(termsModal);
+          }
+        });
+
+        // 5. Scroll Reveal Animation using IntersectionObserver
+        const revealElements = document.querySelectorAll(".reveal");
+
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+                // Unobserve after animation is triggered
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -40px 0px",
+          },
+        );
+
+        revealElements.forEach((el) => revealObserver.observe(el));
+      });
+    </script>
+  </body>
+</html>
