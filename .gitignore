@@ -2,6 +2,7 @@
 node_modules/
 vendor/
 .venv/
+venv/
 
 # Next.js
 .next/
@@ -10,19 +11,25 @@ out/
 # Build output
 dist/
 build/
+coverage/
 __pycache__/
 *.py[cod]
 target/
 
+# TypeScript
+*.tsbuildinfo
+
 # Environment & secrets
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 *.pem
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
 
 # OS files
 .DS_Store
@@ -32,6 +39,18 @@ Desktop.ini
 # IDE / Editor
 .idea/
 .vscode/
-*.swpnode_modules/
-.next/
-.env
+*.swp
+*.swo
+
+# AI coding agent configuration
+.agents/
+.claude/
+.cursor/
+.devin/
+.windsurf/
+
+# Vercel
+.vercel/
+
+# Turbo
+.turbo/
