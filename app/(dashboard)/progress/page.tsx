@@ -60,22 +60,22 @@ export default async function ProgressPage() {
       label: "Selesai",
       count: completedTasks,
       rate: completionRate,
-      bar: "bg-[#6DD6B0]",
-      text: "text-[#6DD6B0]",
+      bar: "bg-[#2F855A]",
+      text: "text-[#276749]",
     },
     {
       label: "Dikerjakan",
       count: inProgressTasks,
       rate: inProgressRate,
       bar: "bg-[#FFD166]",
-      text: "text-[#B7791F]",
+      text: "text-[#8A5A0A]",
     },
     {
-      label: "Todo",
+      label: "Belum Dikerjakan",
       count: todoTasks,
       rate: todoRate,
-      bar: "bg-[#4F8EF7]",
-      text: "text-[#4F8EF7]",
+      bar: "bg-[#2563EB]",
+      text: "text-[#2563EB]",
     },
   ]
 
@@ -83,54 +83,54 @@ export default async function ProgressPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-[#25324B]">Progres Akademik</h1>
-        <p className="text-[#718096] text-sm">Pantau statistik penyelesaian tugas dan aktivitas belajar Anda.</p>
+        <p className="text-[#5A6B82] text-sm">Pantau statistik penyelesaian tugas dan aktivitas belajar Anda.</p>
       </div>
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Tingkat Penyelesaian</CardTitle>
-            <TrendingUp className="w-4 h-4 text-[#6DD6B0]" />
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Tingkat Penyelesaian</CardTitle>
+            <TrendingUp className="w-4 h-4 text-[#276749]" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-[#25324B]">{completionRate}%</div>
-            <p className="text-xs text-[#718096] mt-1">Dari total {totalTasks} tugas</p>
+            <p className="text-xs text-[#5A6B82] mt-1">Dari total {totalTasks} tugas</p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Tugas Selesai</CardTitle>
-            <CheckSquare className="w-4 h-4 text-[#4F8EF7]" />
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Tugas Selesai</CardTitle>
+            <CheckSquare className="w-4 h-4 text-[#2563EB]" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-[#25324B]">{completedTasks}</div>
-            <p className="text-xs text-[#6DD6B0] font-medium mt-1">Tugas berhasil diselesaikan</p>
+            <p className="text-xs text-[#276749] font-medium mt-1">Tugas berhasil diselesaikan</p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Belum Selesai</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Belum Selesai</CardTitle>
             <Clock className="w-4 h-4 text-[#FFD166]" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-[#25324B]">{incompleteTasks}</div>
-            <p className="text-xs text-[#718096] mt-1">
-              {todoTasks} todo · {inProgressTasks} dikerjakan
+            <p className="text-xs text-[#5A6B82] mt-1">
+              {todoTasks} belum dikerjakan · {inProgressTasks} dikerjakan
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Terlambat</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Terlambat</CardTitle>
             <AlertCircle className="w-4 h-4 text-[#EF4444]" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-[#25324B]">{overdueTasks}</div>
-            <p className="text-xs text-[#EF4444] font-medium mt-1">Melewati deadline</p>
+            <p className="text-xs text-[#EF4444] font-medium mt-1">Melewati tenggat</p>
           </CardContent>
         </Card>
       </div>
@@ -143,7 +143,7 @@ export default async function ProgressPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {totalTasks === 0 ? (
-              <p className="text-sm text-[#718096]">
+              <p className="text-sm text-[#5A6B82]">
                 Belum ada tugas. Tambahkan tugas pertamamu di halaman Tugas Saya.
               </p>
             ) : (
@@ -175,19 +175,19 @@ export default async function ProgressPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-xl border border-[#E5EAF3] bg-[#F8FAFF] p-4">
-                <div className="text-xs font-medium text-[#718096]">Diselesaikan</div>
-                <div className="text-2xl font-bold text-[#6DD6B0]">{weeklyCompleted}</div>
-                <div className="text-xs text-[#718096]">tugas</div>
+                <div className="text-xs font-medium text-[#5A6B82]">Diselesaikan</div>
+                <div className="text-2xl font-bold text-[#276749]">{weeklyCompleted}</div>
+                <div className="text-xs text-[#5A6B82]">tugas</div>
               </div>
               <div className="rounded-xl border border-[#E5EAF3] bg-[#F8FAFF] p-4">
-                <div className="text-xs font-medium text-[#718096]">Ditambahkan</div>
-                <div className="text-2xl font-bold text-[#4F8EF7]">{weeklyCreated}</div>
-                <div className="text-xs text-[#718096]">tugas</div>
+                <div className="text-xs font-medium text-[#5A6B82]">Ditambahkan</div>
+                <div className="text-2xl font-bold text-[#2563EB]">{weeklyCreated}</div>
+                <div className="text-xs text-[#5A6B82]">tugas</div>
               </div>
             </div>
 
             <div className="flex items-center justify-between rounded-xl border border-[#E5EAF3] p-4 text-sm">
-              <span className="flex items-center gap-2 text-[#718096]">
+              <span className="flex items-center gap-2 text-[#5A6B82]">
                 <FileText className="w-4 h-4 text-[#A78BFA]" />
                 Total catatan belajar
               </span>
@@ -196,7 +196,7 @@ export default async function ProgressPage() {
 
             <div className="p-4 bg-[#F8FAFF] rounded-xl border border-[#E5EAF3] space-y-2">
               <h3 className="font-semibold text-[#25324B] text-sm">Tips Produktivitas</h3>
-              <p className="text-xs text-[#718096] leading-relaxed">
+              <p className="text-xs text-[#5A6B82] leading-relaxed">
                 Konsistensi adalah kunci keberhasilan belajar. Selesaikan tugas-tugas dengan prioritas tinggi terlebih dahulu dan buat catatan ringkas untuk memudahkan review materi.
               </p>
             </div>

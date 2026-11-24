@@ -38,7 +38,7 @@ export function MobileNav({
       <SheetContent side="left" className="w-72 p-0 bg-white flex flex-col">
         <SheetHeader className="p-6 border-b border-[#E5EAF3] text-left">
           <SheetTitle className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-[#4F8EF7] flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white font-bold text-sm">
               SF
             </div>
             <span className="text-xl font-bold text-[#25324B]">StudyFlow</span>

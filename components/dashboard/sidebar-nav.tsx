@@ -51,8 +51,8 @@ export function SidebarNav({
             aria-current={isActive ? "page" : undefined}
             className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
               isActive
-                ? "bg-[#EAF3FF] text-[#4F8EF7]"
-                : "text-[#718096] hover:bg-[#EAF3FF] hover:text-[#4F8EF7]"
+                ? "bg-[#EAF3FF] text-[#2563EB]"
+                : "text-[#5A6B82] hover:bg-[#EAF3FF] hover:text-[#2563EB]"
             }`}
           >
             <Icon className="w-5 h-5" />

@@ -24,27 +24,27 @@ export type TaskItemActions = {
 }
 
 const priorityLabels: Record<TaskItemData["priority"], string> = {
-  LOW: "Low",
-  MEDIUM: "Medium",
-  HIGH: "High",
+  LOW: "Rendah",
+  MEDIUM: "Sedang",
+  HIGH: "Tinggi",
 }
 
 const priorityStyles: Record<TaskItemData["priority"], string> = {
-  LOW: "bg-[#EAF3FF] text-[#4F8EF7]",
-  MEDIUM: "bg-[#FFF6D9] text-[#B7791F]",
+  LOW: "bg-[#EAF3FF] text-[#2563EB]",
+  MEDIUM: "bg-[#FFF6D9] text-[#8A5A0A]",
   HIGH: "bg-red-50 text-red-600",
 }
 
 const statusLabels: Record<TaskItemData["status"], string> = {
-  TODO: "Todo",
+  TODO: "Belum Dikerjakan",
   IN_PROGRESS: "Dikerjakan",
   COMPLETED: "Selesai",
 }
 
 const statusStyles: Record<TaskItemData["status"], string> = {
-  TODO: "bg-[#EAF3FF] text-[#4F8EF7]",
-  IN_PROGRESS: "bg-[#FFF6D9] text-[#B7791F]",
-  COMPLETED: "bg-[#E7FAF2] text-[#6DD6B0]",
+  TODO: "bg-[#EAF3FF] text-[#2563EB]",
+  IN_PROGRESS: "bg-[#FFF6D9] text-[#8A5A0A]",
+  COMPLETED: "bg-[#E7FAF2] text-[#276749]",
 }
 
 const selectClassName =
@@ -68,7 +68,7 @@ export function TaskItem({
             <span
               className={`font-semibold text-base ${
                 task.status === "COMPLETED"
-                  ? "line-through text-[#718096]"
+                  ? "line-through text-[#5A6B82]"
                   : "text-[#25324B]"
               }`}
             >
@@ -86,12 +86,12 @@ export function TaskItem({
             </span>
           </div>
           {task.description && (
-            <p className="text-sm text-[#718096] whitespace-pre-wrap">{task.description}</p>
+            <p className="text-sm text-[#5A6B82] whitespace-pre-wrap">{task.description}</p>
           )}
           {task.deadlineLabel && (
-            <div className="text-xs text-[#718096] flex items-center space-x-1 pt-1">
+            <div className="text-xs text-[#5A6B82] flex items-center space-x-1 pt-1">
               <Clock className="w-3.5 h-3.5" />
-              <span>Deadline: {task.deadlineLabel}</span>
+              <span>Tenggat: {task.deadlineLabel}</span>
             </div>
           )}
         </div>
@@ -114,8 +114,8 @@ export function TaskItem({
               variant={task.status === "COMPLETED" ? "outline" : "default"}
               className={
                 task.status === "COMPLETED"
-                  ? "border-[#E5EAF3] text-[#718096]"
-                  : "bg-[#6DD6B0] hover:bg-[#5bc29e] text-white"
+                  ? "border-[#E5EAF3] text-[#5A6B82]"
+                  : "bg-[#2F855A] hover:bg-[#276749] text-white"
               }
             >
               {task.status === "COMPLETED" ? "Belum Selesai" : "Tandai Selesai"}
@@ -162,7 +162,7 @@ export function TaskItem({
               className="text-sm font-medium text-[#25324B]"
               htmlFor={`edit-deadline-${task.id}`}
             >
-              Deadline
+              Tenggat
             </label>
             <Input
               id={`edit-deadline-${task.id}`}
@@ -185,9 +185,9 @@ export function TaskItem({
               defaultValue={task.priority}
               className={selectClassName}
             >
-              <option value="LOW">Low (Rendah)</option>
-              <option value="MEDIUM">Medium (Sedang)</option>
-              <option value="HIGH">High (Tinggi)</option>
+              <option value="LOW">Rendah</option>
+              <option value="MEDIUM">Sedang</option>
+              <option value="HIGH">Tinggi</option>
             </select>
           </div>
           <div className="space-y-2 md:col-span-3">
@@ -219,7 +219,7 @@ export function TaskItem({
               defaultValue={task.status}
               className={selectClassName}
             >
-              <option value="TODO">Todo</option>
+              <option value="TODO">Belum Dikerjakan</option>
               <option value="IN_PROGRESS">Dikerjakan</option>
               <option value="COMPLETED">Selesai</option>
             </select>
@@ -230,7 +230,7 @@ export function TaskItem({
             </Button>
             <Button
               type="submit"
-              className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white"
+              className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
             >
               Simpan Perubahan
             </Button>

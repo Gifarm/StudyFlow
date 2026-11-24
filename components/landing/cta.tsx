@@ -12,7 +12,7 @@ export function CTA() {
           Mulai atur tugas, jadwal, dan progres belajar Anda bersama StudyFlow hari ini.
         </p>
         <Button asChild size="lg" variant="secondary" className="rounded-xl px-8">
-          <Link href="/register">Get Started</Link>
+          <Link href="/register">Daftar Gratis</Link>
         </Button>
       </div>
     </section>

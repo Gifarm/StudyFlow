@@ -32,19 +32,19 @@ function monthKey(date: Date) {
 }
 
 const priorityStyles: Record<string, string> = {
-  LOW: "bg-[#EAF3FF] text-[#4F8EF7]",
-  MEDIUM: "bg-[#FFF6D9] text-[#B7791F]",
+  LOW: "bg-[#EAF3FF] text-[#2563EB]",
+  MEDIUM: "bg-[#FFF6D9] text-[#8A5A0A]",
   HIGH: "bg-red-50 text-red-600",
 }
 
 const priorityLabels: Record<string, string> = {
-  LOW: "Low",
-  MEDIUM: "Medium",
-  HIGH: "High",
+  LOW: "Rendah",
+  MEDIUM: "Sedang",
+  HIGH: "Tinggi",
 }
 
 const statusLabels: Record<string, string> = {
-  TODO: "Todo",
+  TODO: "Belum Dikerjakan",
   IN_PROGRESS: "Dikerjakan",
   COMPLETED: "Selesai",
 }
@@ -109,7 +109,7 @@ export default async function CalendarPage({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#25324B]">Kalender & Agenda</h1>
-          <p className="text-[#718096] text-sm">Lihat deadline tugas dalam tampilan bulanan.</p>
+          <p className="text-[#5A6B82] text-sm">Lihat tenggat tugas dalam tampilan bulanan.</p>
         </div>
         <div className="flex items-center gap-2">
           <Button asChild variant="outline" size="icon" className="border-[#E5EAF3]">
@@ -126,7 +126,7 @@ export default async function CalendarPage({
             </Link>
           </Button>
           {!isCurrentMonth && (
-            <Button asChild variant="ghost" className="text-[#4F8EF7]">
+            <Button asChild variant="ghost" className="text-[#2563EB]">
               <Link href="/calendar">Bulan ini</Link>
             </Button>
           )}
@@ -142,7 +142,7 @@ export default async function CalendarPage({
                   {weekdayLabels.map((label) => (
                     <div
                       key={label}
-                      className="py-2 text-center text-xs font-semibold text-[#718096]"
+                      className="py-2 text-center text-xs font-semibold text-[#5A6B82]"
                     >
                       {label}
                     </div>
@@ -171,8 +171,8 @@ export default async function CalendarPage({
                     <div
                       className={`mb-1 inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold ${
                         isToday
-                          ? "bg-[#4F8EF7] text-white"
-                          : "text-[#718096]"
+                          ? "bg-[#2563EB] text-white"
+                          : "text-[#5A6B82]"
                       }`}
                     >
                       {day}
@@ -184,7 +184,7 @@ export default async function CalendarPage({
                           title={task.title}
                           className={`truncate rounded px-1.5 py-0.5 text-[11px] font-medium ${
                             task.status === "COMPLETED"
-                              ? "bg-[#E7FAF2] text-[#6DD6B0] line-through"
+                              ? "bg-[#E7FAF2] text-[#276749] line-through"
                               : priorityStyles[task.priority]
                           }`}
                         >
@@ -192,7 +192,7 @@ export default async function CalendarPage({
                         </div>
                       ))}
                       {dayTasks.length > 3 && (
-                        <div className="px-1.5 text-[11px] text-[#718096]">
+                        <div className="px-1.5 text-[11px] text-[#5A6B82]">
                           +{dayTasks.length - 3} lagi
                         </div>
                       )}
@@ -216,21 +216,21 @@ export default async function CalendarPage({
           <Card className="border-[#E5EAF3] bg-white shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg font-bold text-[#25324B] flex items-center space-x-2">
-                <CalendarIcon className="w-5 h-5 text-[#4F8EF7]" />
+                <CalendarIcon className="w-5 h-5 text-[#2563EB]" />
                 <span>Ringkasan Bulan Ini</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-[#718096]">Total deadline</span>
+                <span className="text-[#5A6B82]">Total tenggat</span>
                 <span className="font-semibold text-[#25324B]">{tasks.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#718096]">Sudah selesai</span>
-                <span className="font-semibold text-[#6DD6B0]">{completedThisMonth}</span>
+                <span className="text-[#5A6B82]">Sudah selesai</span>
+                <span className="font-semibold text-[#276749]">{completedThisMonth}</span>
               </div>
               <div className="flex items-center justify-between gap-3">
-                <span className="text-[#718096]">Deadline terdekat</span>
+                <span className="text-[#5A6B82]">Tenggat terdekat</span>
                 <span className="text-right font-medium text-[#25324B]">
                   {nextDeadline?.deadline
                     ? new Date(nextDeadline.deadline).toLocaleDateString("id-ID", {
@@ -246,9 +246,9 @@ export default async function CalendarPage({
             <CardHeader>
               <CardTitle className="text-base font-bold text-[#25324B]">Informasi</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 text-sm text-[#718096]">
+            <CardContent className="space-y-3 text-sm text-[#5A6B82]">
               <p>
-                Setiap tugas dengan deadline akan otomatis tampil pada tanggalnya di kalender.
+                Setiap tugas dengan tenggat akan otomatis tampil pada tanggalnya di kalender.
               </p>
               <p>
                 Warna label mengikuti prioritas tugas. Tugas selesai ditampilkan dengan
@@ -268,8 +268,14 @@ export default async function CalendarPage({
         </CardHeader>
         <CardContent className="divide-y divide-[#E5EAF3]">
           {tasks.length === 0 ? (
-            <div className="py-8 text-center text-[#718096]">
-              Tidak ada deadline tugas pada bulan ini.
+            <div className="py-8 text-center text-[#5A6B82]">
+              <p>Tidak ada tenggat tugas pada bulan ini.</p>
+              <Link
+                href="/tasks"
+                className="mt-2 inline-block font-medium text-[#2563EB] hover:underline"
+              >
+                Tambah tugas
+              </Link>
             </div>
           ) : (
             tasks.map((task) => (
@@ -282,7 +288,7 @@ export default async function CalendarPage({
                     <span
                       className={`font-medium ${
                         task.status === "COMPLETED"
-                          ? "line-through text-[#718096]"
+                          ? "line-through text-[#5A6B82]"
                           : "text-[#25324B]"
                       }`}
                     >
@@ -295,17 +301,17 @@ export default async function CalendarPage({
                     >
                       {priorityLabels[task.priority]}
                     </span>
-                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[#F8FAFF] text-[#718096]">
+                    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[#F8FAFF] text-[#5A6B82]">
                       {statusLabels[task.status]}
                     </span>
                   </div>
                   {task.description && (
-                    <p className="text-xs text-[#718096] whitespace-pre-wrap">
+                    <p className="text-xs text-[#5A6B82] whitespace-pre-wrap">
                       {task.description}
                     </p>
                   )}
                 </div>
-                <div className="flex items-center space-x-1 text-xs text-[#4F8EF7] bg-[#EAF3FF] px-3 py-1.5 rounded-md font-medium shrink-0">
+                <div className="flex items-center space-x-1 text-xs text-[#2563EB] bg-[#EAF3FF] px-3 py-1.5 rounded-md font-medium shrink-0">
                   <Clock className="w-3.5 h-3.5" />
                   <span>
                     {task.deadline

@@ -11,7 +11,7 @@ const iconMap: Record<string, React.ElementType> = {
 
 export function Features() {
   return (
-    <section id="fitur" className="container mx-auto max-w-6xl px-4 py-20">
+    <section id="fitur" className="scroll-mt-20 container mx-auto max-w-6xl px-4 py-20">
       <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
         Fitur Utama
       </h2>

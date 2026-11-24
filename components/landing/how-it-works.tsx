@@ -2,7 +2,7 @@ import { howItWorks } from "@/lib/constants";
 
 export function HowItWorks() {
   return (
-    <section id="cara-kerja" className="bg-white py-20">
+    <section id="cara-kerja" className="scroll-mt-20 bg-white py-20">
       <div className="container mx-auto max-w-6xl px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-text-main mb-12">
           Cara Kerja

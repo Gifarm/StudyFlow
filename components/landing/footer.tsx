@@ -22,13 +22,13 @@ export function Footer() {
         <div>
           <h4 className="font-bold text-text-main mb-4">Legal</h4>
           <ul className="space-y-2">
-            <li><Link href="/privacy" className="text-text-secondary hover:text-primary">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="text-text-secondary hover:text-primary">Terms of Service</Link></li>
+            <li><Link href="/privacy" className="text-text-secondary hover:text-primary">Kebijakan Privasi</Link></li>
+            <li><Link href="/terms" className="text-text-secondary hover:text-primary">Ketentuan Layanan</Link></li>
           </ul>
         </div>
       </div>
       <div className="container mx-auto max-w-6xl px-4 mt-12 pt-8 border-t text-center text-text-secondary text-sm">
-        &copy; {new Date().getFullYear()} StudyFlow. All rights reserved.
+        &copy; {new Date().getFullYear()} StudyFlow. Hak cipta dilindungi..
       </div>
     </footer>
   );

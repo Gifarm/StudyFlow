@@ -27,7 +27,7 @@ export default async function DashboardLayout({
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-[#E5EAF3] hidden md:flex flex-col fixed inset-y-0 z-50">
         <div className="p-6 border-b border-[#E5EAF3] flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-lg bg-[#4F8EF7] flex items-center justify-center text-white font-bold">
+          <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white font-bold">
             SF
           </div>
           <span className="text-xl font-bold text-[#25324B]">StudyFlow</span>
@@ -56,11 +56,11 @@ export default async function DashboardLayout({
             <MobileNav logoutAction={handleSignOut} isAdmin={isAdmin} />
             <span className="text-lg font-bold text-[#25324B]">StudyFlow</span>
           </div>
-          <div className="hidden md:block text-sm text-[#718096]">
+          <div className="hidden md:block text-sm text-[#5A6B82]">
             Selamat datang kembali, <span className="font-semibold text-[#25324B]">{session.user.name}</span>!
           </div>
           <div className="flex items-center space-x-4">
-            <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#4F8EF7] flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#2563EB] flex items-center justify-center font-bold">
               {session.user.name?.[0]?.toUpperCase() || "U"}
             </div>
           </div>

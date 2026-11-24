@@ -16,19 +16,19 @@ import {
 import Link from "next/link"
 
 const priorityStyles: Record<string, string> = {
-  LOW: "bg-[#EAF3FF] text-[#4F8EF7]",
-  MEDIUM: "bg-[#FFF6D9] text-[#B7791F]",
+  LOW: "bg-[#EAF3FF] text-[#2563EB]",
+  MEDIUM: "bg-[#FFF6D9] text-[#8A5A0A]",
   HIGH: "bg-red-50 text-red-600",
 }
 
 const priorityLabels: Record<string, string> = {
-  LOW: "Low",
-  MEDIUM: "Medium",
-  HIGH: "High",
+  LOW: "Rendah",
+  MEDIUM: "Sedang",
+  HIGH: "Tinggi",
 }
 
 const statusLabels: Record<string, string> = {
-  TODO: "Todo",
+  TODO: "Belum Dikerjakan",
   IN_PROGRESS: "Dikerjakan",
   COMPLETED: "Selesai",
 }
@@ -128,23 +128,23 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Total Tugas</CardTitle>
-            <CheckSquare className="w-4 h-4 text-[#4F8EF7]" />
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Total Tugas</CardTitle>
+            <CheckSquare className="w-4 h-4 text-[#2563EB]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#25324B]">{totalTasks}</div>
-            <p className="text-xs text-[#718096] mt-1">Semua tugas tercatat</p>
+            <p className="text-xs text-[#5A6B82] mt-1">Semua tugas tercatat</p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Tugas Selesai</CardTitle>
-            <div className="w-4 h-4 rounded-full bg-[#E7FAF2] text-[#6DD6B0] flex items-center justify-center font-bold text-xs">✓</div>
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Tugas Selesai</CardTitle>
+            <div className="w-4 h-4 rounded-full bg-[#E7FAF2] text-[#276749] flex items-center justify-center font-bold text-xs">✓</div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#25324B]">{completedTasks}</div>
-            <p className="text-xs text-[#6DD6B0] font-medium mt-1">
+            <p className="text-xs text-[#276749] font-medium mt-1">
               {completionRate}% selesai
             </p>
           </CardContent>
@@ -152,23 +152,23 @@ export default async function DashboardPage() {
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Terlambat</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Terlambat</CardTitle>
             <AlertCircle className="w-4 h-4 text-[#EF4444]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#25324B]">{overdueTasks.length}</div>
-            <p className="text-xs text-[#718096] mt-1">Melewati deadline</p>
+            <p className="text-xs text-[#5A6B82] mt-1">Melewati tenggat</p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Catatan Belajar</CardTitle>
+            <CardTitle className="text-sm font-medium text-[#5A6B82]">Catatan Belajar</CardTitle>
             <FileText className="w-4 h-4 text-[#A78BFA]" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-[#25324B]">{notesCount}</div>
-            <p className="text-xs text-[#718096] mt-1">Catatan tersimpan</p>
+            <p className="text-xs text-[#5A6B82] mt-1">Catatan tersimpan</p>
           </CardContent>
         </Card>
       </div>
@@ -179,17 +179,23 @@ export default async function DashboardPage() {
           <Card className="border-[#E5EAF3] bg-white shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
-                <CalendarDays className="w-5 h-5 text-[#4F8EF7]" />
+                <CalendarDays className="w-5 h-5 text-[#2563EB]" />
                 Tugas Hari Ini
               </CardTitle>
-              <Link href="/tasks" className="text-sm font-medium text-[#4F8EF7] hover:underline">
+              <Link href="/tasks" className="text-sm font-medium text-[#2563EB] hover:underline">
                 Lihat Semua →
               </Link>
             </CardHeader>
             <CardContent className="divide-y divide-[#E5EAF3]">
               {todayTasks.length === 0 ? (
-                <div className="py-6 text-center text-sm text-[#718096]">
-                  Tidak ada tugas dengan deadline hari ini. 🎉
+                <div className="py-6 text-center text-sm text-[#5A6B82]">
+                  <p>Tidak ada tugas dengan tenggat hari ini. 🎉</p>
+                  <Link
+                    href="/tasks"
+                    className="mt-2 inline-block font-medium text-[#2563EB] hover:underline"
+                  >
+                    Tambah tugas
+                  </Link>
                 </div>
               ) : (
                 todayTasks.map((task) => (
@@ -201,7 +207,7 @@ export default async function DashboardPage() {
                       <span
                         className={`font-medium truncate ${
                           task.status === "COMPLETED"
-                            ? "line-through text-[#718096]"
+                            ? "line-through text-[#5A6B82]"
                             : "text-[#25324B]"
                         }`}
                       >
@@ -212,7 +218,7 @@ export default async function DashboardPage() {
                       >
                         {priorityLabels[task.priority]}
                       </span>
-                      <span className="text-xs text-[#718096]">
+                      <span className="text-xs text-[#5A6B82]">
                         {statusLabels[task.status]}
                       </span>
                     </div>
@@ -222,11 +228,11 @@ export default async function DashboardPage() {
                         variant={task.status === "COMPLETED" ? "outline" : "default"}
                         className={
                           task.status === "COMPLETED"
-                            ? "border-[#E5EAF3] text-[#718096]"
-                            : "bg-[#6DD6B0] hover:bg-[#5bc29e] text-white"
+                            ? "border-[#E5EAF3] text-[#5A6B82]"
+                            : "bg-[#2F855A] hover:bg-[#276749] text-white"
                         }
                       >
-                        {task.status === "COMPLETED" ? "Batal" : "Selesai"}
+                        {task.status === "COMPLETED" ? "Belum Selesai" : "Selesai"}
                       </Button>
                     </form>
                   </div>
@@ -239,13 +245,19 @@ export default async function DashboardPage() {
             <CardHeader>
               <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
                 <Clock className="w-5 h-5 text-[#FFD166]" />
-                Deadline Terdekat
+                Tenggat Terdekat
               </CardTitle>
             </CardHeader>
             <CardContent className="divide-y divide-[#E5EAF3]">
               {upcomingTasks.length === 0 ? (
-                <div className="py-6 text-center text-sm text-[#718096]">
-                  Belum ada deadline mendatang.
+                <div className="py-6 text-center text-sm text-[#5A6B82]">
+                  <p>Belum ada tenggat mendatang.</p>
+                  <Link
+                    href="/tasks"
+                    className="mt-2 inline-block font-medium text-[#2563EB] hover:underline"
+                  >
+                    Tambah tugas
+                  </Link>
                 </div>
               ) : (
                 upcomingTasks.map((task) => (
@@ -269,7 +281,7 @@ export default async function DashboardPage() {
                           dateStyle: "medium",
                         })}
                       </div>
-                      <div className="text-[#718096]">
+                      <div className="text-[#5A6B82]">
                         {deadlineHint(new Date(task.deadline as Date))}
                       </div>
                     </div>
@@ -301,7 +313,7 @@ export default async function DashboardPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-[#25324B]" htmlFor="deadline">
-                      Deadline (Opsional)
+                      Tenggat (Opsional)
                     </label>
                     <Input
                       id="deadline"
@@ -320,12 +332,12 @@ export default async function DashboardPage() {
                       defaultValue="MEDIUM"
                       className="w-full h-10 px-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
                     >
-                      <option value="LOW">Low (Rendah)</option>
-                      <option value="MEDIUM">Medium (Sedang)</option>
-                      <option value="HIGH">High (Tinggi)</option>
+                      <option value="LOW">Rendah</option>
+                      <option value="MEDIUM">Sedang</option>
+                      <option value="HIGH">Tinggi</option>
                     </select>
                   </div>
-                  <Button type="submit" className="w-full bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+                  <Button type="submit" className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
                     <Plus className="w-4 h-4 mr-2" /> Tambah Tugas
                   </Button>
                 </CardContent>
@@ -336,18 +348,18 @@ export default async function DashboardPage() {
           <Card className="border-[#E5EAF3] bg-white shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-[#6DD6B0]" />
+                <TrendingUp className="w-5 h-5 text-[#276749]" />
                 Progres Minggu Ini
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-[#718096]">Diselesaikan</span>
-                <span className="font-semibold text-[#6DD6B0]">{weeklyCompleted} tugas</span>
+                <span className="text-[#5A6B82]">Diselesaikan</span>
+                <span className="font-semibold text-[#276749]">{weeklyCompleted} tugas</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-[#718096]">Ditambahkan</span>
-                <span className="font-semibold text-[#4F8EF7]">{weeklyCreated} tugas</span>
+                <span className="text-[#5A6B82]">Ditambahkan</span>
+                <span className="font-semibold text-[#2563EB]">{weeklyCreated} tugas</span>
               </div>
               <div className="space-y-2 pt-2">
                 <div className="flex justify-between text-xs font-medium text-[#25324B]">
@@ -356,14 +368,14 @@ export default async function DashboardPage() {
                 </div>
                 <div className="w-full bg-[#E5EAF3] h-2.5 rounded-full overflow-hidden">
                   <div
-                    className="bg-[#6DD6B0] h-full transition-all duration-500 rounded-full"
+                    className="bg-[#2F855A] h-full transition-all duration-500 rounded-full"
                     style={{ width: `${completionRate}%` }}
                   />
                 </div>
               </div>
               <Link
                 href="/progress"
-                className="inline-block text-sm font-medium text-[#4F8EF7] hover:underline"
+                className="inline-block text-sm font-medium text-[#2563EB] hover:underline"
               >
                 Lihat detail progres →
               </Link>

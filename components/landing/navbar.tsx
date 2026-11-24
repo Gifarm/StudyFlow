@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { navLinks } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { MobileMenu } from "@/components/landing/mobile-menu";
 import { auth } from "@/auth";
 
 export async function Navbar() {
@@ -20,22 +21,23 @@ export async function Navbar() {
             </Link>
           ))}
         </nav>
-        <div className="flex gap-2 items-center">
+        <div className="hidden md:flex gap-2 items-center">
           {session?.user ? (
-            <Button asChild className="rounded-xl bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+            <Button asChild className="rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           ) : (
             <>
               <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
-                <Link href="/login">Login</Link>
+                <Link href="/login">Masuk</Link>
               </Button>
-              <Button asChild className="rounded-xl bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
-                <Link href="/register">Get Started</Link>
+              <Button asChild className="rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
+                <Link href="/register">Daftar Gratis</Link>
               </Button>
             </>
           )}
         </div>
+        <MobileMenu isLoggedIn={Boolean(session?.user)} />
       </div>
     </header>
   );

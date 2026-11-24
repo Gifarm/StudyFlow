@@ -49,7 +49,7 @@ function LoginForm() {
     <Card className="w-full max-w-md border-[#E5EAF3] shadow-sm bg-white">
       <CardHeader className="space-y-1 text-center">
         <CardTitle className="text-2xl font-bold text-[#25324B]">Masuk ke StudyFlow</CardTitle>
-        <CardDescription className="text-[#718096]">
+        <CardDescription className="text-[#5A6B82]">
           Lanjutkan progres belajarmu hari ini
         </CardDescription>
       </CardHeader>
@@ -102,13 +102,13 @@ function LoginForm() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#4F8EF7] hover:bg-[#3677E8] text-white"
+            className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
           >
             {loading ? "Memproses..." : "Masuk"}
           </Button>
-          <div className="text-sm text-center text-[#718096]">
+          <div className="text-sm text-center text-[#5A6B82]">
             Belum punya akun?{" "}
-            <Link href="/register" className="text-[#4F8EF7] hover:underline font-medium">
+            <Link href="/register" className="text-[#2563EB] hover:underline font-medium">
               Daftar
             </Link>
           </div>
@@ -121,7 +121,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F8FAFF] px-4">
-      <Suspense fallback={<div className="text-center text-[#718096]">Memuat...</div>}>
+      <Suspense fallback={<div className="text-center text-[#5A6B82]">Memuat...</div>}>
         <LoginForm />
       </Suspense>
     </div>

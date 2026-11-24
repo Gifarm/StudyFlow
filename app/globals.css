@@ -10,19 +10,19 @@
     --card-foreground: 218 31% 22%;
     --popover: 0 0% 100%;
     --popover-foreground: 218 31% 22%;
-    --primary: 216 90% 64%; /* #4F8EF7 */
+    --primary: 221 83% 53%; /* #2563EB - lebih gelap dari #4F8EF7 agar teks putih lolos WCAG AA */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
-    --muted-foreground: 216 15% 52%; /* #718096 */
+    --muted-foreground: 215 18% 43%; /* #5A6B82 */
     --accent: 256 94% 77%; /* #A78BFA */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 210 20% 90%; /* #E5EAF3 */
     --input: 210 20% 90%;
-    --ring: 216 90% 64%;
+    --ring: 221 83% 53%;
     --radius: 1rem;
   }
 }

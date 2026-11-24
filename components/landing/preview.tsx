@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function Preview() {
   return (
-    <section id="preview" className="container mx-auto max-w-6xl px-4 py-20 space-y-20">
+    <section id="preview" className="scroll-mt-20 container mx-auto max-w-6xl px-4 py-20 space-y-20">
       <h2 className="text-3xl md:text-4xl font-bold text-center text-text-main mb-12">
         Preview Fitur
       </h2>
@@ -18,9 +18,9 @@ export function Preview() {
         <div className="bg-surface p-6 rounded-2xl border border-border shadow-sm">
            <div className="space-y-3">
              {[
-               {title: "Tugas Kalkulus", status: "Deadline", color: "text-yellow"},
+               {title: "Tugas Kalkulus", status: "Tenggat", color: "text-[#8A5A0A]"},
                {title: "Laporan Praktikum", status: "Selesai", color: "text-mint"},
-               {title: "Ujian Pemrograman", status: "Deadline", color: "text-yellow"}
+               {title: "Ujian Pemrograman", status: "Tenggat", color: "text-[#8A5A0A]"}
              ].map(item => (
                 <div key={item.title} className="flex justify-between items-center p-3 border rounded-xl">
                   <span className="font-medium">{item.title}</span>

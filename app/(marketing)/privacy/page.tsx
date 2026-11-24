@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function PrivacyPage() {
   return (
     <main className="container mx-auto max-w-3xl px-4 py-20 space-y-6">
-      <h1 className="text-4xl font-bold text-text-main">Privacy Policy</h1>
+      <h1 className="text-4xl font-bold text-text-main">Kebijakan Privasi</h1>
       <p className="text-text-secondary">
         Terakhir diperbarui: 18 Oktober 2026
       </p>

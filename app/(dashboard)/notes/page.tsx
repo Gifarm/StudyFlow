@@ -43,11 +43,11 @@ export default async function NotesPage({
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-[#25324B]">Catatan Belajar</h1>
-        <p className="text-[#718096] text-sm">Simpan ringkasan materi, rumus, atau catatan penting di sini.</p>
+        <p className="text-[#5A6B82] text-sm">Simpan ringkasan materi, rumus, atau catatan penting di sini.</p>
       </div>
 
       {/* Add Note Form */}
-      <Card className="border-[#E5EAF3] bg-white shadow-sm">
+      <Card id="tambah-catatan" className="scroll-mt-24 border-[#E5EAF3] bg-white shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg font-bold text-[#25324B]">Buat Catatan Baru</CardTitle>
         </CardHeader>
@@ -78,7 +78,7 @@ export default async function NotesPage({
                 className="w-full p-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
               />
             </div>
-            <Button type="submit" className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+            <Button type="submit" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
               <Plus className="w-4 h-4 mr-2" /> Simpan Catatan
             </Button>
           </form>
@@ -92,7 +92,7 @@ export default async function NotesPage({
         className="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-xl border border-[#E5EAF3] shadow-sm"
       >
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-[#718096] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#5A6B82] absolute left-3 top-1/2 -translate-y-1/2" />
           <Input
             name="q"
             defaultValue={searchQuery}
@@ -101,26 +101,37 @@ export default async function NotesPage({
           />
         </div>
         <div className="flex gap-2">
-          <Button type="submit" className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+          <Button type="submit" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
             Cari
           </Button>
           {searchQuery && (
-            <Button asChild variant="outline" className="border-[#E5EAF3] text-[#718096]">
+            <Button asChild variant="outline" className="border-[#E5EAF3] text-[#5A6B82]">
               <Link href="/notes">Reset</Link>
             </Button>
           )}
         </div>
       </form>
 
-      <p className="text-sm text-[#718096]">{notes.length} catatan ditemukan</p>
+      <p className="text-sm text-[#5A6B82]">{notes.length} catatan ditemukan</p>
 
       {/* Notes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {notes.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-[#718096] bg-white rounded-xl border border-[#E5EAF3]">
-            {searchQuery
-              ? "Tidak ada catatan yang cocok dengan pencarian."
-              : "Belum ada catatan. Buat catatan pertamamu sekarang!"}
+          <div className="col-span-full py-12 text-center text-[#5A6B82] bg-white rounded-xl border border-[#E5EAF3]">
+            <p>
+              {searchQuery
+                ? "Tidak ada catatan yang cocok dengan pencarian."
+                : "Belum ada catatan. Buat catatan pertamamu sekarang!"}
+            </p>
+            <Button
+              asChild
+              variant="outline"
+              className="mt-4 border-[#E5EAF3] text-[#25324B]"
+            >
+              <Link href={searchQuery ? "/notes" : "#tambah-catatan"}>
+                {searchQuery ? "Reset Pencarian" : "Buat Catatan Pertama"}
+              </Link>
+            </Button>
           </div>
         ) : (
           notes.map((note) => (

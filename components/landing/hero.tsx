@@ -7,7 +7,7 @@ export function Hero() {
     <section className="container mx-auto max-w-6xl px-4 py-20">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
-          <Badge variant="secondary" className="bg-accent/10 text-accent hover:bg-accent/20 px-3 py-1 rounded-full">
+          <Badge variant="secondary" className="bg-[#EDE9FE] text-[#6D28D9] hover:bg-[#DDD6FE] px-3 py-1 rounded-full">
             Belajar lebih terarah
           </Badge>
           <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight">
@@ -18,10 +18,10 @@ export function Hero() {
           </p>
           <div className="flex gap-4">
             <Button asChild size="lg" className="rounded-xl px-8">
-              <Link href="/register">Get Started</Link>
+              <Link href="/register">Daftar Gratis</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-xl px-8">
-              <Link href="/login">Login</Link>
+              <Link href="/login">Masuk</Link>
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">Gratis untuk pelajar.</p>
@@ -36,11 +36,11 @@ export function Hero() {
           <div className="space-y-4">
             <div className="h-12 bg-card border rounded-xl flex items-center px-4 justify-between">
               <span className="font-medium">Tugas Matematika</span>
-              <Badge variant="outline" className="text-yellow-500 border-yellow-200 bg-yellow-50">Deadline</Badge>
+              <Badge variant="outline" className="text-yellow-700 border-yellow-200 bg-yellow-50">Tenggat</Badge>
             </div>
             <div className="h-12 bg-card border rounded-xl flex items-center px-4 justify-between">
               <span className="font-medium">Baca Buku Sejarah</span>
-              <Badge variant="outline" className="text-green-500 border-green-200 bg-green-50">Selesai</Badge>
+              <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50">Selesai</Badge>
             </div>
             <div className="h-4 bg-secondary rounded-full overflow-hidden">
               <div className="h-full w-2/3 bg-green-500" />

@@ -134,7 +134,7 @@ export default async function AdminPage() {
       value: userCount,
       detail: `+${newUsers7} dalam 7 hari · +${newUsers30} dalam 30 hari`,
       icon: Users,
-      color: "text-[#4F8EF7]",
+      color: "text-[#2563EB]",
       background: "bg-[#EAF3FF]",
     },
     {
@@ -167,7 +167,7 @@ export default async function AdminPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-[#25324B]">Admin</h1>
-        <p className="text-[#718096] text-sm">
+        <p className="text-[#5A6B82] text-sm">
           Ringkasan penggunaan StudyFlow. Halaman ini hanya-baca dan tidak dapat mengubah data
           pengguna.
         </p>
@@ -203,10 +203,10 @@ export default async function AdminPage() {
         <CardContent>
           <div className="flex items-center gap-4 text-xs text-[#5A6B82] mb-4">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-[#4F8EF7]" /> Pengguna baru
+              <span className="w-3 h-3 rounded-sm bg-[#2563EB]" /> Pengguna baru
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-sm bg-[#6DD6B0]" /> Tugas selesai
+              <span className="w-3 h-3 rounded-sm bg-[#2F855A]" /> Tugas selesai
             </span>
           </div>
           <div className="overflow-x-auto">
@@ -215,12 +215,12 @@ export default async function AdminPage() {
                 <div key={day.key} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
                   <div className="flex items-end gap-0.5 h-full">
                     <div
-                      className="w-2.5 rounded-t bg-[#4F8EF7]"
+                      className="w-2.5 rounded-t bg-[#2563EB]"
                       style={{ height: `${Math.max(4, (newUserSeries[index] / maxSeries) * 100)}%` }}
                       title={`${newUserSeries[index]} pengguna baru`}
                     />
                     <div
-                      className="w-2.5 rounded-t bg-[#6DD6B0]"
+                      className="w-2.5 rounded-t bg-[#2F855A]"
                       style={{ height: `${Math.max(4, (completedSeries[index] / maxSeries) * 100)}%` }}
                       title={`${completedSeries[index]} tugas selesai`}
                     />

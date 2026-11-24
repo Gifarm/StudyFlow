@@ -102,7 +102,7 @@ export function PasswordForm() {
       <Button
         type="submit"
         disabled={loading}
-        className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white"
+        className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
       >
         {loading ? "Menyimpan..." : "Ubah Password"}
       </Button>

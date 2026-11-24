@@ -48,7 +48,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md border-[#E5EAF3] shadow-sm bg-white">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-[#25324B]">Daftar ke StudyFlow</CardTitle>
-          <CardDescription className="text-[#718096]">
+          <CardDescription className="text-[#5A6B82]">
             Mulai kelola tugas dan jadwal belajarmu dengan lebih teratur
           </CardDescription>
         </CardHeader>
@@ -112,13 +112,13 @@ export default function RegisterPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#4F8EF7] hover:bg-[#3677E8] text-white"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
             >
               {loading ? "Memproses..." : "Daftar"}
             </Button>
-            <div className="text-sm text-center text-[#718096]">
+            <div className="text-sm text-center text-[#5A6B82]">
               Sudah punya akun?{" "}
-              <Link href="/login" className="text-[#4F8EF7] hover:underline font-medium">
+              <Link href="/login" className="text-[#2563EB] hover:underline font-medium">
                 Masuk
               </Link>
             </div>

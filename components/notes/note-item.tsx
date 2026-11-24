@@ -96,19 +96,19 @@ export function NoteItem({
               <Button
                 type="submit"
                 size="sm"
-                className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white"
+                className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
               >
                 Simpan
               </Button>
             </div>
           </form>
         ) : (
-          <p className="text-sm text-[#718096] whitespace-pre-wrap line-clamp-4">
+          <p className="text-sm text-[#5A6B82] whitespace-pre-wrap line-clamp-4">
             {note.content}
           </p>
         )}
       </CardContent>
-      <CardFooter className="border-t border-[#E5EAF3] pt-4 flex items-center justify-between text-xs text-[#718096]">
+      <CardFooter className="border-t border-[#E5EAF3] pt-4 flex items-center justify-between text-xs text-[#5A6B82]">
         <span>{note.createdLabel}</span>
         <form action={deleteAction}>
           <ConfirmButton
