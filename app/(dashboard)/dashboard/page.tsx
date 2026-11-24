@@ -4,8 +4,34 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { createTask, toggleTaskStatus } from "../actions"
-import { CheckSquare, Clock, AlertCircle, FileText, Plus } from "lucide-react"
+import {
+  AlertCircle,
+  CalendarDays,
+  CheckSquare,
+  Clock,
+  FileText,
+  Plus,
+  TrendingUp,
+} from "lucide-react"
 import Link from "next/link"
+
+const priorityStyles: Record<string, string> = {
+  LOW: "bg-[#EAF3FF] text-[#4F8EF7]",
+  MEDIUM: "bg-[#FFF6D9] text-[#B7791F]",
+  HIGH: "bg-red-50 text-red-600",
+}
+
+const priorityLabels: Record<string, string> = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  HIGH: "High",
+}
+
+const statusLabels: Record<string, string> = {
+  TODO: "Todo",
+  IN_PROGRESS: "Dikerjakan",
+  COMPLETED: "Selesai",
+}
 
 export default async function DashboardPage() {
   const session = await auth()
@@ -22,13 +48,69 @@ export default async function DashboardPage() {
     where: { userId },
   })
 
+  const now = new Date()
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const startOfTomorrow = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+  )
+  const threeDaysLater = new Date(startOfToday.getTime() + 3 * 86400000)
+
+  const weekStart = new Date(startOfToday)
+  weekStart.setDate(startOfToday.getDate() - ((startOfToday.getDay() + 6) % 7))
+
   const totalTasks = tasks.length
-  const completedTasks = tasks.filter((t) => t.status === "COMPLETED").length
-  const urgentTasks = tasks.filter(
-    (t) => t.status !== "COMPLETED" && t.deadline && new Date(t.deadline) <= new Date(Date.now() + 86400000 * 3)
+  const completedTasks = tasks.filter((task) => task.status === "COMPLETED").length
+  const completionRate =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
+  const todayTasks = tasks.filter(
+    (task) =>
+      task.deadline &&
+      new Date(task.deadline) >= startOfToday &&
+      new Date(task.deadline) < startOfTomorrow,
+  )
+
+  const overdueTasks = tasks.filter(
+    (task) =>
+      task.status !== "COMPLETED" &&
+      task.deadline &&
+      new Date(task.deadline) < startOfToday,
+  )
+
+  const upcomingTasks = tasks
+    .filter(
+      (task) =>
+        task.status !== "COMPLETED" &&
+        task.deadline &&
+        new Date(task.deadline) >= startOfToday,
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.deadline as Date).getTime() -
+        new Date(b.deadline as Date).getTime(),
+    )
+    .slice(0, 5)
+
+  const weeklyCompleted = tasks.filter(
+    (task) => task.status === "COMPLETED" && new Date(task.updatedAt) >= weekStart,
+  ).length
+  const weeklyCreated = tasks.filter(
+    (task) => new Date(task.createdAt) >= weekStart,
   ).length
 
-  const recentTasks = tasks.slice(0, 5)
+  function deadlineHint(deadline: Date) {
+    const diff = Math.round(
+      (new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate()).getTime() -
+        startOfToday.getTime()) /
+        86400000,
+    )
+    if (diff === 0) return "Hari ini"
+    if (diff === 1) return "Besok"
+    if (diff > 1) return `${diff} hari lagi`
+    return "Terlambat"
+  }
 
   return (
     <div className="space-y-8">
@@ -63,19 +145,19 @@ export default async function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold text-[#25324B]">{completedTasks}</div>
             <p className="text-xs text-[#6DD6B0] font-medium mt-1">
-              {totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0}% selesai
+              {completionRate}% selesai
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-[#718096]">Mendekati Deadline</CardTitle>
-            <AlertCircle className="w-4 h-4 text-[#FFD166]" />
+            <CardTitle className="text-sm font-medium text-[#718096]">Terlambat</CardTitle>
+            <AlertCircle className="w-4 h-4 text-[#EF4444]" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-[#25324B]">{urgentTasks}</div>
-            <p className="text-xs text-[#718096] mt-1">Dalam 3 hari ke depan</p>
+            <div className="text-2xl font-bold text-[#25324B]">{overdueTasks.length}</div>
+            <p className="text-xs text-[#718096] mt-1">Melewati deadline</p>
           </CardContent>
         </Card>
 
@@ -91,111 +173,201 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* Main Content Grid: Quick Add & Recent Tasks */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Tasks */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-[#25324B]">Tugas Terbaru</h2>
-            <Link href="/dashboard/tasks" className="text-sm font-medium text-[#4F8EF7] hover:underline">
-              Lihat Semua →
-            </Link>
-          </div>
-
-          <div className="bg-white rounded-xl border border-[#E5EAF3] shadow-sm divide-y divide-[#E5EAF3]">
-            {recentTasks.length === 0 ? (
-              <div className="p-8 text-center text-[#718096]">
-                Belum ada tugas. Tambahkan tugas pertamamu sekarang!
-              </div>
-            ) : (
-              recentTasks.map((task) => (
-                <div key={task.id} className="p-4 flex items-center justify-between hover:bg-[#F8FAFF] transition-colors">
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className={`font-medium ${task.status === "COMPLETED" ? "line-through text-[#718096]" : "text-[#25324B]"}`}>
+        {/* Today & Upcoming */}
+        <div className="lg:col-span-2 space-y-8">
+          <Card className="border-[#E5EAF3] bg-white shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
+                <CalendarDays className="w-5 h-5 text-[#4F8EF7]" />
+                Tugas Hari Ini
+              </CardTitle>
+              <Link href="/tasks" className="text-sm font-medium text-[#4F8EF7] hover:underline">
+                Lihat Semua →
+              </Link>
+            </CardHeader>
+            <CardContent className="divide-y divide-[#E5EAF3]">
+              {todayTasks.length === 0 ? (
+                <div className="py-6 text-center text-sm text-[#718096]">
+                  Tidak ada tugas dengan deadline hari ini. 🎉
+                </div>
+              ) : (
+                todayTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="py-3 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2 min-w-0">
+                      <span
+                        className={`font-medium truncate ${
+                          task.status === "COMPLETED"
+                            ? "line-through text-[#718096]"
+                            : "text-[#25324B]"
+                        }`}
+                      >
                         {task.title}
                       </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        task.priority === "HIGH" ? "bg-red-50 text-red-600" :
-                        task.priority === "MEDIUM" ? "bg-[#FFF6D9] text-[#B7791F]" :
-                        "bg-[#EAF3FF] text-[#4F8EF7]"
-                      }`}>
-                        {task.priority}
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityStyles[task.priority]}`}
+                      >
+                        {priorityLabels[task.priority]}
+                      </span>
+                      <span className="text-xs text-[#718096]">
+                        {statusLabels[task.status]}
                       </span>
                     </div>
-                    {task.deadline && (
-                      <div className="text-xs text-[#718096] flex items-center space-x-1">
-                        <Clock className="w-3 h-3" />
-                        <span>Deadline: {new Date(task.deadline).toLocaleDateString("id-ID", { dateStyle: "medium" })}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
                     <form action={toggleTaskStatus.bind(null, task.id, task.status)}>
                       <Button
                         size="sm"
                         variant={task.status === "COMPLETED" ? "outline" : "default"}
-                        className={task.status === "COMPLETED" ? "border-[#E5EAF3] text-[#718096]" : "bg-[#6DD6B0] hover:bg-[#5bc29e] text-white"}
+                        className={
+                          task.status === "COMPLETED"
+                            ? "border-[#E5EAF3] text-[#718096]"
+                            : "bg-[#6DD6B0] hover:bg-[#5bc29e] text-white"
+                        }
                       >
-                        {task.status === "COMPLETED" ? "Batal Selesai" : "Selesai"}
+                        {task.status === "COMPLETED" ? "Batal" : "Selesai"}
                       </Button>
                     </form>
                   </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+
+          <Card className="border-[#E5EAF3] bg-white shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
+                <Clock className="w-5 h-5 text-[#FFD166]" />
+                Deadline Terdekat
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="divide-y divide-[#E5EAF3]">
+              {upcomingTasks.length === 0 ? (
+                <div className="py-6 text-center text-sm text-[#718096]">
+                  Belum ada deadline mendatang.
                 </div>
-              ))
-            )}
-          </div>
+              ) : (
+                upcomingTasks.map((task) => (
+                  <div
+                    key={task.id}
+                    className="py-3 flex items-center justify-between gap-3"
+                  >
+                    <div className="flex flex-wrap items-center gap-2 min-w-0">
+                      <span className="font-medium text-[#25324B] truncate">
+                        {task.title}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityStyles[task.priority]}`}
+                      >
+                        {priorityLabels[task.priority]}
+                      </span>
+                    </div>
+                    <div className="text-right text-xs shrink-0">
+                      <div className="font-medium text-[#25324B]">
+                        {new Date(task.deadline as Date).toLocaleDateString("id-ID", {
+                          dateStyle: "medium",
+                        })}
+                      </div>
+                      <div className="text-[#718096]">
+                        {deadlineHint(new Date(task.deadline as Date))}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Quick Add Task */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-[#25324B]">Tambah Tugas Cepat</h2>
+        {/* Quick Add & Weekly Progress */}
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-[#25324B]">Tambah Tugas Cepat</h2>
+            <Card className="border-[#E5EAF3] bg-white shadow-sm">
+              <form action={createTask}>
+                <CardContent className="space-y-4 pt-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-[#25324B]" htmlFor="title">
+                      Judul Tugas
+                    </label>
+                    <Input
+                      id="title"
+                      name="title"
+                      required
+                      placeholder="Contoh: Belajar Matematika"
+                      className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-[#25324B]" htmlFor="deadline">
+                      Deadline (Opsional)
+                    </label>
+                    <Input
+                      id="deadline"
+                      name="deadline"
+                      type="date"
+                      className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-[#25324B]" htmlFor="priority">
+                      Prioritas
+                    </label>
+                    <select
+                      id="priority"
+                      name="priority"
+                      defaultValue="MEDIUM"
+                      className="w-full h-10 px-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
+                    >
+                      <option value="LOW">Low (Rendah)</option>
+                      <option value="MEDIUM">Medium (Sedang)</option>
+                      <option value="HIGH">High (Tinggi)</option>
+                    </select>
+                  </div>
+                  <Button type="submit" className="w-full bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+                    <Plus className="w-4 h-4 mr-2" /> Tambah Tugas
+                  </Button>
+                </CardContent>
+              </form>
+            </Card>
+          </div>
+
           <Card className="border-[#E5EAF3] bg-white shadow-sm">
-            <form action={createTask}>
-              <CardContent className="space-y-4 pt-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#25324B]" htmlFor="title">
-                    Judul Tugas
-                  </label>
-                  <Input
-                    id="title"
-                    name="title"
-                    required
-                    placeholder="Contoh: Belajar Matematika"
-                    className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+            <CardHeader>
+              <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[#6DD6B0]" />
+                Progres Minggu Ini
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#718096]">Diselesaikan</span>
+                <span className="font-semibold text-[#6DD6B0]">{weeklyCompleted} tugas</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#718096]">Ditambahkan</span>
+                <span className="font-semibold text-[#4F8EF7]">{weeklyCreated} tugas</span>
+              </div>
+              <div className="space-y-2 pt-2">
+                <div className="flex justify-between text-xs font-medium text-[#25324B]">
+                  <span>Penyelesaian keseluruhan</span>
+                  <span>{completionRate}%</span>
+                </div>
+                <div className="w-full bg-[#E5EAF3] h-2.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-[#6DD6B0] h-full transition-all duration-500 rounded-full"
+                    style={{ width: `${completionRate}%` }}
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#25324B]" htmlFor="deadline">
-                    Deadline (Opsional)
-                  </label>
-                  <Input
-                    id="deadline"
-                    name="deadline"
-                    type="date"
-                    className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#25324B]" htmlFor="priority">
-                    Prioritas
-                  </label>
-                  <select
-                    id="priority"
-                    name="priority"
-                    defaultValue="MEDIUM"
-                    className="w-full h-10 px-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
-                  >
-                    <option value="LOW">Low (Rendah)</option>
-                    <option value="MEDIUM">Medium (Sedang)</option>
-                    <option value="HIGH">High (Tinggi)</option>
-                  </select>
-                </div>
-                <Button type="submit" className="w-full bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
-                  <Plus className="w-4 h-4 mr-2" /> Tambah Tugas
-                </Button>
-              </CardContent>
-            </form>
+              </div>
+              <Link
+                href="/progress"
+                className="inline-block text-sm font-medium text-[#4F8EF7] hover:underline"
+              >
+                Lihat detail progres →
+              </Link>
+            </CardContent>
           </Card>
         </div>
       </div>

@@ -1,14 +1,13 @@
 import { auth, signOut } from "@/auth"
 import { redirect } from "next/navigation"
-import Link from "next/link"
-import {
-  LayoutDashboard,
-  CheckSquare,
-  Calendar as CalendarIcon,
-  FileText,
-  TrendingUp,
-  LogOut
-} from "lucide-react"
+import { LogOut } from "lucide-react"
+import { SidebarNav } from "@/components/dashboard/sidebar-nav"
+import { MobileNav } from "@/components/dashboard/mobile-nav"
+
+async function handleSignOut() {
+  "use server"
+  await signOut({ redirectTo: "/login" })
+}
 
 export default async function DashboardLayout({
   children,
@@ -21,14 +20,6 @@ export default async function DashboardLayout({
     redirect("/login")
   }
 
-  const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Tugas Saya", href: "/dashboard/tasks", icon: CheckSquare },
-    { name: "Kalender", href: "/dashboard/calendar", icon: CalendarIcon },
-    { name: "Catatan", href: "/dashboard/notes", icon: FileText },
-    { name: "Progres", href: "/dashboard/progress", icon: TrendingUp },
-  ]
-
   return (
     <div className="min-h-screen bg-[#F8FAFF] flex">
       {/* Sidebar */}
@@ -40,29 +31,10 @@ export default async function DashboardLayout({
           <span className="text-xl font-bold text-[#25324B]">StudyFlow</span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-[#718096] hover:bg-[#EAF3FF] hover:text-[#4F8EF7] transition-colors"
-              >
-                <Icon className="w-5 h-5" />
-                <span>{item.name}</span>
-              </Link>
-            )
-          })}
-        </nav>
+        <SidebarNav />
 
         <div className="p-4 border-t border-[#E5EAF3]">
-          <form
-            action={async () => {
-              "use server"
-              await signOut({ redirectTo: "/login" })
-            }}
-          >
+          <form action={handleSignOut}>
             <button
               type="submit"
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
@@ -79,6 +51,7 @@ export default async function DashboardLayout({
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-[#E5EAF3] px-6 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center space-x-3 md:hidden">
+            <MobileNav logoutAction={handleSignOut} />
             <span className="text-lg font-bold text-[#25324B]">StudyFlow</span>
           </div>
           <div className="hidden md:block text-sm text-[#718096]">

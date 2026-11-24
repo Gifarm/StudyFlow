@@ -1,19 +1,41 @@
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { createNote, removeNote } from "../actions"
-import { FileText, Plus, Trash2 } from "lucide-react"
+import { createNote, removeNote, updateNote } from "../actions"
+import { Search, Plus } from "lucide-react"
+import { Prisma } from "@prisma/client"
+import Link from "next/link"
+import { NoteItem } from "@/components/notes/note-item"
 
-export default async function NotesPage() {
+export default async function NotesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>
+}) {
   const session = await auth()
   const userId = session?.user?.id
 
   if (!userId) return null
 
+  const resolvedParams = await searchParams
+  const searchQuery = resolvedParams.q?.trim() ?? ""
+
+  const where: Prisma.NoteWhereInput = {
+    userId,
+    ...(searchQuery
+      ? {
+          OR: [
+            { title: { contains: searchQuery, mode: "insensitive" } },
+            { content: { contains: searchQuery, mode: "insensitive" } },
+          ],
+        }
+      : {}),
+  }
+
   const notes = await prisma.note.findMany({
-    where: { userId },
+    where,
     orderBy: { createdAt: "desc" },
   })
 
@@ -63,37 +85,58 @@ export default async function NotesPage() {
         </CardContent>
       </Card>
 
+      {/* Search */}
+      <form
+        method="GET"
+        action="/notes"
+        className="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-xl border border-[#E5EAF3] shadow-sm"
+      >
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-[#718096] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Input
+            name="q"
+            defaultValue={searchQuery}
+            placeholder="Cari judul atau isi catatan..."
+            className="pl-9 border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button type="submit" className="bg-[#4F8EF7] hover:bg-[#3677E8] text-white">
+            Cari
+          </Button>
+          {searchQuery && (
+            <Button asChild variant="outline" className="border-[#E5EAF3] text-[#718096]">
+              <Link href="/notes">Reset</Link>
+            </Button>
+          )}
+        </div>
+      </form>
+
+      <p className="text-sm text-[#718096]">{notes.length} catatan ditemukan</p>
+
       {/* Notes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {notes.length === 0 ? (
           <div className="col-span-full py-12 text-center text-[#718096] bg-white rounded-xl border border-[#E5EAF3]">
-            Belum ada catatan. Buat catatan pertamamu sekarang!
+            {searchQuery
+              ? "Tidak ada catatan yang cocok dengan pencarian."
+              : "Belum ada catatan. Buat catatan pertamamu sekarang!"}
           </div>
         ) : (
           notes.map((note) => (
-            <Card key={note.id} className="border-[#E5EAF3] bg-white shadow-sm flex flex-col justify-between">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-base font-bold text-[#25324B] flex items-center space-x-2">
-                    <FileText className="w-4 h-4 text-[#A78BFA]" />
-                    <span>{note.title}</span>
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-sm text-[#718096] whitespace-pre-wrap line-clamp-4">
-                  {note.content}
-                </p>
-              </CardContent>
-              <CardFooter className="border-t border-[#E5EAF3] pt-4 flex items-center justify-between text-xs text-[#718096]">
-                <span>{new Date(note.createdAt).toLocaleDateString("id-ID", { dateStyle: "medium" })}</span>
-                <form action={removeNote.bind(null, note.id)}>
-                  <Button size="sm" variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 h-8 px-2">
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </form>
-              </CardFooter>
-            </Card>
+            <NoteItem
+              key={note.id}
+              note={{
+                id: note.id,
+                title: note.title,
+                content: note.content,
+                createdLabel: new Date(note.createdAt).toLocaleDateString("id-ID", {
+                  dateStyle: "medium",
+                }),
+              }}
+              updateAction={updateNote.bind(null, note.id)}
+              deleteAction={removeNote.bind(null, note.id)}
+            />
           ))
         )}
       </div>
