@@ -16,9 +16,11 @@ export default async function DashboardLayout({
 }) {
   const session = await auth()
 
-  if (!session || !session.user) {
+  if (!session?.user?.id) {
     redirect("/login")
   }
+
+  const isAdmin = session.user.role === "ADMIN"
 
   return (
     <div className="min-h-screen bg-[#F8FAFF] flex">
@@ -31,7 +33,7 @@ export default async function DashboardLayout({
           <span className="text-xl font-bold text-[#25324B]">StudyFlow</span>
         </div>
 
-        <SidebarNav />
+        <SidebarNav isAdmin={isAdmin} />
 
         <div className="p-4 border-t border-[#E5EAF3]">
           <form action={handleSignOut}>
@@ -51,7 +53,7 @@ export default async function DashboardLayout({
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-[#E5EAF3] px-6 flex items-center justify-between sticky top-0 z-40">
           <div className="flex items-center space-x-3 md:hidden">
-            <MobileNav logoutAction={handleSignOut} />
+            <MobileNav logoutAction={handleSignOut} isAdmin={isAdmin} />
             <span className="text-lg font-bold text-[#25324B]">StudyFlow</span>
           </div>
           <div className="hidden md:block text-sm text-[#718096]">

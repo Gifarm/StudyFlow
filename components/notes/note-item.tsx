@@ -113,6 +113,7 @@ export function NoteItem({
         <form action={deleteAction}>
           <ConfirmButton
             message={`Hapus catatan "${note.title}"? Tindakan ini tidak dapat dibatalkan.`}
+            aria-label={`Hapus catatan "${note.title}"`}
             size="sm"
             variant="outline"
             className="border-red-200 text-red-600 hover:bg-red-50 h-8 px-2"

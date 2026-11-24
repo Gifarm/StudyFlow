@@ -216,7 +216,7 @@ export default async function DashboardPage() {
                         {statusLabels[task.status]}
                       </span>
                     </div>
-                    <form action={toggleTaskStatus.bind(null, task.id, task.status)}>
+                    <form action={toggleTaskStatus.bind(null, task.id)}>
                       <Button
                         size="sm"
                         variant={task.status === "COMPLETED" ? "outline" : "default"}

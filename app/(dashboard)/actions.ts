@@ -5,6 +5,18 @@ import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import { Priority, Status } from "@prisma/client"
 import bcrypt from "bcryptjs"
+import { rateLimit } from "@/lib/rate-limit"
+import {
+  NOTE_CONTENT_MAX,
+  NOTE_TITLE_MAX,
+  PASSWORD_MAX_BYTES,
+  TASK_DESCRIPTION_MAX,
+  TASK_TITLE_MAX,
+  byteLength,
+  readString,
+  readTrimmed,
+  validatePassword,
+} from "@/lib/validation"
 
 const priorityValues = Object.values(Priority)
 const statusValues = Object.values(Status)
@@ -25,122 +37,135 @@ function parseDeadline(value: FormDataEntryValue | null): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-export async function createTask(formData: FormData) {
+async function requireUserId(): Promise<string> {
   const session = await auth()
-  if (!session || !session.user?.id) {
+  if (!session?.user?.id) {
     throw new Error("Unauthorized")
   }
+  return session.user.id
+}
 
-  const title = (formData.get("title") as string)?.trim()
-  const description = (formData.get("description") as string)?.trim()
-  const priority = parsePriority(formData.get("priority"))
-
-  if (!title) {
-    throw new Error("Judul tugas wajib diisi.")
+function validateTaskInput(title: string, description: string | null) {
+  if (title.length > TASK_TITLE_MAX) {
+    throw new Error(`Judul tugas maksimal ${TASK_TITLE_MAX} karakter.`)
   }
+  if (description && description.length > TASK_DESCRIPTION_MAX) {
+    throw new Error(`Deskripsi maksimal ${TASK_DESCRIPTION_MAX} karakter.`)
+  }
+}
 
-  await prisma.task.create({
-    data: {
-      title,
-      description: description || null,
-      deadline: parseDeadline(formData.get("deadline")),
-      priority,
-      status: "TODO",
-      userId: session.user.id,
-    },
-  })
-
+function revalidateAll() {
   revalidatePath("/dashboard")
   revalidatePath("/tasks")
   revalidatePath("/calendar")
   revalidatePath("/progress")
 }
 
-export async function updateTask(taskId: string, formData: FormData) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+export async function createTask(formData: FormData) {
+  const userId = await requireUserId()
 
-  const title = (formData.get("title") as string)?.trim()
-  const description = (formData.get("description") as string)?.trim()
+  const title = readTrimmed(formData.get("title"))
+  const description = readTrimmed(formData.get("description"))
 
   if (!title) {
     throw new Error("Judul tugas wajib diisi.")
   }
+  validateTaskInput(title, description)
+
+  await prisma.task.create({
+    data: {
+      title,
+      description,
+      deadline: parseDeadline(formData.get("deadline")),
+      priority: parsePriority(formData.get("priority")),
+      status: "TODO",
+      userId,
+    },
+  })
+
+  revalidateAll()
+}
+
+export async function updateTask(taskId: string, formData: FormData) {
+  const userId = await requireUserId()
+
+  const title = readTrimmed(formData.get("title"))
+  const description = readTrimmed(formData.get("description"))
+
+  if (!title) {
+    throw new Error("Judul tugas wajib diisi.")
+  }
+  validateTaskInput(title, description)
 
   const status = parseStatus(formData.get("status"))
 
   await prisma.task.updateMany({
-    where: { id: taskId, userId: session.user.id },
+    where: { id: taskId, userId },
     data: {
       title,
-      description: description || null,
+      description,
       deadline: parseDeadline(formData.get("deadline")),
       priority: parsePriority(formData.get("priority")),
       ...(status ? { status } : {}),
     },
   })
 
-  revalidatePath("/dashboard")
-  revalidatePath("/tasks")
-  revalidatePath("/calendar")
-  revalidatePath("/progress")
+  revalidateAll()
 }
 
-export async function toggleTaskStatus(taskId: string, currentStatus: Status) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+export async function toggleTaskStatus(taskId: string) {
+  const userId = await requireUserId()
 
-  const newStatus = currentStatus === "COMPLETED" ? "TODO" : "COMPLETED"
-
-  await prisma.task.updateMany({
-    where: { id: taskId, userId: session.user.id },
-    data: { status: newStatus },
+  // Status diambil dari database, bukan dari client, agar tidak bisa
+  // dipaksa lewat parameter arbitrer.
+  const task = await prisma.task.findFirst({
+    where: { id: taskId, userId },
+    select: { status: true },
   })
 
-  revalidatePath("/dashboard")
-  revalidatePath("/tasks")
-  revalidatePath("/calendar")
-  revalidatePath("/progress")
+  if (!task) {
+    return
+  }
+
+  await prisma.task.updateMany({
+    where: { id: taskId, userId },
+    data: { status: task.status === "COMPLETED" ? "TODO" : "COMPLETED" },
+  })
+
+  revalidateAll()
 }
 
 export async function removeTask(taskId: string) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+  const userId = await requireUserId()
 
   await prisma.task.deleteMany({
-    where: { id: taskId, userId: session.user.id },
+    where: { id: taskId, userId },
   })
 
-  revalidatePath("/dashboard")
-  revalidatePath("/tasks")
-  revalidatePath("/calendar")
-  revalidatePath("/progress")
+  revalidateAll()
 }
 
 export async function createNote(formData: FormData) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+  const userId = await requireUserId()
 
-  const title = formData.get("title") as string
-  const content = formData.get("content") as string
+  const title = readTrimmed(formData.get("title"))
+  const content = readTrimmed(formData.get("content"))
 
   if (!title || !content) {
     throw new Error("Judul dan isi catatan wajib diisi.")
+  }
+  if (title.length > NOTE_TITLE_MAX) {
+    throw new Error(`Judul catatan maksimal ${NOTE_TITLE_MAX} karakter.`)
+  }
+  if (content.length > NOTE_CONTENT_MAX) {
+    throw new Error(`Isi catatan maksimal ${NOTE_CONTENT_MAX} karakter.`)
   }
 
   await prisma.note.create({
     data: {
       title,
       content,
-      userId: session.user.id,
+      userId,
     },
   })
 
@@ -149,20 +174,23 @@ export async function createNote(formData: FormData) {
 }
 
 export async function updateNote(noteId: string, formData: FormData) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+  const userId = await requireUserId()
 
-  const title = (formData.get("title") as string)?.trim()
-  const content = (formData.get("content") as string)?.trim()
+  const title = readTrimmed(formData.get("title"))
+  const content = readTrimmed(formData.get("content"))
 
   if (!title || !content) {
     throw new Error("Judul dan isi catatan wajib diisi.")
   }
+  if (title.length > NOTE_TITLE_MAX) {
+    throw new Error(`Judul catatan maksimal ${NOTE_TITLE_MAX} karakter.`)
+  }
+  if (content.length > NOTE_CONTENT_MAX) {
+    throw new Error(`Isi catatan maksimal ${NOTE_CONTENT_MAX} karakter.`)
+  }
 
   await prisma.note.updateMany({
-    where: { id: noteId, userId: session.user.id },
+    where: { id: noteId, userId },
     data: { title, content },
   })
 
@@ -171,13 +199,10 @@ export async function updateNote(noteId: string, formData: FormData) {
 }
 
 export async function removeNote(noteId: string) {
-  const session = await auth()
-  if (!session || !session.user?.id) {
-    throw new Error("Unauthorized")
-  }
+  const userId = await requireUserId()
 
   await prisma.note.deleteMany({
-    where: { id: noteId, userId: session.user.id },
+    where: { id: noteId, userId },
   })
 
   revalidatePath("/notes")
@@ -193,20 +218,32 @@ export async function changePassword(
   formData: FormData,
 ): Promise<PasswordChangeResult> {
   const session = await auth()
-  if (!session || !session.user?.id) {
+  if (!session?.user?.id) {
     return { error: "Sesi tidak valid. Silakan login kembali." }
   }
 
-  const currentPassword = String(formData.get("currentPassword") ?? "")
-  const newPassword = String(formData.get("newPassword") ?? "")
-  const confirmPassword = String(formData.get("confirmPassword") ?? "")
+  const userId = session.user.id
+
+  const limit = rateLimit(`change-password:${userId}`, 5, 60 * 60 * 1000)
+  if (!limit.success) {
+    return { error: "Terlalu banyak percobaan. Coba lagi beberapa saat lagi." }
+  }
+
+  const currentPassword = readString(formData.get("currentPassword")) ?? ""
+  const newPassword = readString(formData.get("newPassword")) ?? ""
+  const confirmPassword = readString(formData.get("confirmPassword")) ?? ""
 
   if (!currentPassword || !newPassword || !confirmPassword) {
     return { error: "Semua kolom password wajib diisi." }
   }
 
-  if (newPassword.length < 6) {
-    return { error: "Password baru minimal 6 karakter." }
+  const passwordError = validatePassword(newPassword)
+  if (passwordError) {
+    return { error: passwordError }
+  }
+
+  if (byteLength(newPassword) > PASSWORD_MAX_BYTES) {
+    return { error: `Password maksimal ${PASSWORD_MAX_BYTES} byte.` }
   }
 
   if (newPassword !== confirmPassword) {
@@ -218,7 +255,7 @@ export async function changePassword(
   }
 
   const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
+    where: { id: userId },
     select: { password: true },
   })
 
@@ -232,9 +269,16 @@ export async function changePassword(
   }
 
   await prisma.user.updateMany({
-    where: { id: session.user.id },
-    data: { password: await bcrypt.hash(newPassword, 10) },
+    where: { id: userId },
+    data: {
+      password: await bcrypt.hash(newPassword, 10),
+      // Naikkan versi token agar semua sesi lama (termasuk yang dicuri)
+      // langsung tidak berlaku.
+      tokenVersion: { increment: 1 },
+    },
   })
 
-  return { success: "Password berhasil diubah." }
+  return {
+    success: "Password berhasil diubah. Silakan login kembali dengan password baru.",
+  }
 }

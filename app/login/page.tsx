@@ -12,6 +12,7 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const registered = searchParams.get("registered")
+  const passwordChanged = searchParams.get("passwordChanged")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -59,8 +60,13 @@ function LoginForm() {
               Registrasi berhasil! Silakan masuk dengan akun Anda.
             </div>
           )}
+          {passwordChanged === "success" && (
+            <div role="status" className="p-3 text-sm bg-green-50 text-green-600 rounded-md border border-green-200">
+              Password berhasil diubah. Silakan masuk kembali dengan password baru.
+            </div>
+          )}
           {error && (
-            <div className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
+            <div role="alert" className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
               {error}
             </div>
           )}
@@ -72,6 +78,7 @@ function LoginForm() {
               id="name"
               name="name"
               required
+              autoComplete="username"
               placeholder="nama_pengguna"
               className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
             />
@@ -85,6 +92,7 @@ function LoginForm() {
               name="password"
               type="password"
               required
+              autoComplete="current-password"
               placeholder="••••••••"
               className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
             />

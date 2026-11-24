@@ -16,8 +16,10 @@ import { SidebarNav } from "@/components/dashboard/sidebar-nav"
 
 export function MobileNav({
   logoutAction,
+  isAdmin = false,
 }: {
   logoutAction: () => Promise<void>
+  isAdmin?: boolean
 }) {
   const [open, setOpen] = useState(false)
 
@@ -46,7 +48,7 @@ export function MobileNav({
           </SheetDescription>
         </SheetHeader>
 
-        <SidebarNav onNavigate={() => setOpen(false)} />
+        <SidebarNav onNavigate={() => setOpen(false)} isAdmin={isAdmin} />
 
         <div className="p-4 border-t border-[#E5EAF3]">
           <form action={logoutAction}>

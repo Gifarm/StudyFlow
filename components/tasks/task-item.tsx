@@ -125,6 +125,7 @@ export function TaskItem({
           <form action={deleteAction}>
             <ConfirmButton
               message={`Hapus tugas "${task.title}"? Tindakan ini tidak dapat dibatalkan.`}
+              aria-label={`Hapus tugas "${task.title}"`}
               size="sm"
               variant="outline"
               className="border-red-200 text-red-600 hover:bg-red-50"

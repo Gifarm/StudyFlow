@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { changePassword } from "@/app/(dashboard)/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 export function PasswordForm() {
+  const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -25,6 +27,11 @@ export function PasswordForm() {
       } else if (result.success) {
         setSuccess(result.success)
         form.reset()
+        // Sesi lama sengaja diinvalidasi oleh server, jadi arahkan ke login.
+        setTimeout(() => {
+          router.push("/login?passwordChanged=success")
+          router.refresh()
+        }, 1500)
       }
     } catch {
       setError("Terjadi kesalahan pada sistem. Coba lagi.")
@@ -36,12 +43,12 @@ export function PasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
+        <div role="alert" className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
           {error}
         </div>
       )}
       {success && (
-        <div className="p-3 text-sm bg-green-50 text-green-600 rounded-md border border-green-200">
+        <div role="status" className="p-3 text-sm bg-green-50 text-green-600 rounded-md border border-green-200">
           {success}
         </div>
       )}
@@ -70,9 +77,9 @@ export function PasswordForm() {
             name="newPassword"
             type="password"
             required
-            minLength={6}
+            minLength={8}
             autoComplete="new-password"
-            placeholder="Minimal 6 karakter"
+            placeholder="Minimal 8 karakter"
             className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
           />
         </div>
@@ -85,7 +92,7 @@ export function PasswordForm() {
             name="confirmPassword"
             type="password"
             required
-            minLength={6}
+            minLength={8}
             autoComplete="new-password"
             className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
           />

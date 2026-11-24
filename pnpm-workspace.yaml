@@ -1,0 +1,10 @@
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  prisma: true
+  sharp: true
+  unrs-resolver: true
+
+overrides:
+  postcss: ^8.5.30
+  postcss-selector-parser: ^6.1.5

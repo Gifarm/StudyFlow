@@ -21,6 +21,13 @@ export default function RegisterPage() {
     const formData = new FormData(event.currentTarget)
     const name = formData.get("name") as string
     const password = formData.get("password") as string
+    const confirmPassword = formData.get("confirmPassword") as string
+
+    if (password !== confirmPassword) {
+      setError("Konfirmasi password tidak cocok.")
+      setLoading(false)
+      return
+    }
 
     try {
       const result = await registerUser({ name, password })
@@ -48,7 +55,7 @@ export default function RegisterPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
+              <div role="alert" className="p-3 text-sm bg-red-50 text-red-600 rounded-md border border-red-200">
                 {error}
               </div>
             )}
@@ -60,9 +67,15 @@ export default function RegisterPage() {
                 id="name"
                 name="name"
                 required
+                minLength={3}
+                maxLength={32}
+                autoComplete="username"
                 placeholder="nama_pengguna"
                 className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
               />
+              <p className="text-xs text-[#5A6B82]">
+                3–32 karakter: huruf, angka, titik, garis bawah, atau tanda hubung.
+              </p>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-[#25324B]" htmlFor="password">
@@ -73,7 +86,24 @@ export default function RegisterPage() {
                 name="password"
                 type="password"
                 required
-                placeholder="••••••••"
+                minLength={8}
+                autoComplete="new-password"
+                placeholder="Minimal 8 karakter"
+                className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[#25324B]" htmlFor="confirmPassword">
+                Konfirmasi Password
+              </label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                placeholder="Ulangi password"
                 className="border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
               />
             </div>

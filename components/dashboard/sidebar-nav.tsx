@@ -8,6 +8,7 @@ import {
   FileText,
   LayoutDashboard,
   Settings,
+  ShieldCheck,
   TrendingUp,
 } from "lucide-react"
 
@@ -20,12 +21,25 @@ export const dashboardNavItems = [
   { name: "Pengaturan", href: "/settings", icon: Settings },
 ]
 
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+export const adminNavItem = {
+  name: "Admin",
+  href: "/admin",
+  icon: ShieldCheck,
+}
+
+export function SidebarNav({
+  onNavigate,
+  isAdmin = false,
+}: {
+  onNavigate?: () => void
+  isAdmin?: boolean
+}) {
   const pathname = usePathname()
+  const items = isAdmin ? [...dashboardNavItems, adminNavItem] : dashboardNavItems
 
   return (
     <nav className="flex-1 p-4 space-y-1">
-      {dashboardNavItems.map((item) => {
+      {items.map((item) => {
         const Icon = item.icon
         const isActive = pathname === item.href
 

@@ -7,14 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
-  id        String   @id @default(cuid())
-  uniqueId  String   @unique
-  name      String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  tasks     Task[]
-  notes     Note[]
+  id            String   @id @default(cuid())
+  uniqueId      String   @unique
+  name          String   @unique
+  password      String
+  role          UserRole @default(USER)
+  tokenVersion  Int      @default(0)
+  createdAt     DateTime @default(now())
+  tasks         Task[]
+  notes         Note[]
 }
 
 enum Priority {

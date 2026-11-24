@@ -265,7 +265,7 @@ export default async function TasksPage({
                   status: task.status,
                 }}
                 updateAction={updateTask.bind(null, task.id)}
-                toggleAction={toggleTaskStatus.bind(null, task.id, task.status)}
+                toggleAction={toggleTaskStatus.bind(null, task.id)}
                 deleteAction={removeTask.bind(null, task.id)}
               />
             ))
