@@ -1,8 +1,11 @@
+import Link from "next/link"
 import { auth, signOut } from "@/auth"
 import { redirect } from "next/navigation"
-import { LogOut } from "lucide-react"
+import { Bell, LogOut } from "lucide-react"
 import { SidebarNav } from "@/components/dashboard/sidebar-nav"
 import { MobileNav } from "@/components/dashboard/mobile-nav"
+import { prisma } from "@/lib/prisma"
+import { jakartaDayRange } from "@/lib/reminders"
 
 async function handleSignOut() {
   "use server"
@@ -21,6 +24,15 @@ export default async function DashboardLayout({
   }
 
   const isAdmin = session.user.role === "ADMIN"
+
+  const { start: tomorrowStart, end: tomorrowEnd } = jakartaDayRange(1)
+  const tomorrowCount = await prisma.task.count({
+    where: {
+      userId: session.user.id,
+      deadline: { gte: tomorrowStart, lt: tomorrowEnd },
+      status: { not: "COMPLETED" },
+    },
+  })
 
   return (
     <div className="min-h-screen bg-[#F8FAFF] flex">
@@ -60,6 +72,22 @@ export default async function DashboardLayout({
             Selamat datang kembali, <span className="font-semibold text-[#25324B]">{session.user.name}</span>!
           </div>
           <div className="flex items-center space-x-4">
+            <Link
+              href="/dashboard#tenggat-besok"
+              aria-label={
+                tomorrowCount > 0
+                  ? `${tomorrowCount} tugas dengan tenggat besok`
+                  : "Tidak ada tenggat besok"
+              }
+              className="relative inline-flex size-9 items-center justify-center rounded-full text-[#5A6B82] transition-colors hover:bg-[#EAF3FF] hover:text-[#2563EB]"
+            >
+              <Bell className="w-5 h-5" />
+              {tomorrowCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 min-w-[18px] rounded-full bg-red-600 px-1 text-center text-[10px] font-bold leading-[18px] text-white">
+                  {tomorrowCount > 9 ? "9+" : tomorrowCount}
+                </span>
+              )}
+            </Link>
             <div className="w-9 h-9 rounded-full bg-[#EAF3FF] text-[#2563EB] flex items-center justify-center font-bold">
               {session.user.name?.[0]?.toUpperCase() || "U"}
             </div>

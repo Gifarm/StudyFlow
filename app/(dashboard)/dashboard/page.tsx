@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { createTask, toggleTaskStatus } from "../actions"
 import {
   AlertCircle,
+  BellRing,
   CalendarDays,
   CheckSquare,
   Clock,
@@ -14,6 +15,7 @@ import {
   TrendingUp,
 } from "lucide-react"
 import Link from "next/link"
+import { jakartaDayRange } from "@/lib/reminders"
 
 const priorityStyles: Record<string, string> = {
   LOW: "bg-[#EAF3FF] text-[#2563EB]",
@@ -100,6 +102,15 @@ export default async function DashboardPage() {
     (task) => new Date(task.createdAt) >= weekStart,
   ).length
 
+  const { start: tomorrowStart, end: tomorrowEnd } = jakartaDayRange(1)
+  const tomorrowTasks = tasks.filter(
+    (task) =>
+      task.status !== "COMPLETED" &&
+      task.deadline &&
+      new Date(task.deadline) >= tomorrowStart &&
+      new Date(task.deadline) < tomorrowEnd,
+  )
+
   function deadlineHint(deadline: Date) {
     const diff = Math.round(
       (new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate()).getTime() -
@@ -115,7 +126,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-[#4F8EF7] to-[#3677E8] rounded-2xl p-6 md:p-8 text-white shadow-sm">
+      <div className="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] rounded-2xl p-6 md:p-8 text-white shadow-sm">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">
           Halo, {session.user?.name || "Pengguna"}! 👋
         </h1>
@@ -123,6 +134,38 @@ export default async function DashboardPage() {
           Semangat belajarnya! Kelola tugas dan catatanmu dengan mudah hari ini agar target belajarmu tercapai.
         </p>
       </div>
+
+      {tomorrowTasks.length > 0 && (
+        <div
+          id="tenggat-besok"
+          className="scroll-mt-24 rounded-xl border border-amber-200 bg-amber-50 p-4"
+        >
+          <div className="flex items-start gap-3">
+            <BellRing className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
+            <div className="min-w-0">
+              <p className="font-semibold text-amber-900">
+                Besok ada {tomorrowTasks.length} tenggat
+              </p>
+              <ul className="mt-1 space-y-1 text-sm text-amber-800">
+                {tomorrowTasks.slice(0, 3).map((task) => (
+                  <li key={task.id} className="truncate">
+                    • {task.title}
+                  </li>
+                ))}
+                {tomorrowTasks.length > 3 && (
+                  <li>• +{tomorrowTasks.length - 3} tugas lainnya</li>
+                )}
+              </ul>
+              <Link
+                href="/tasks"
+                className="mt-2 inline-block text-sm font-medium text-amber-900 underline"
+              >
+                Lihat semua tugas
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

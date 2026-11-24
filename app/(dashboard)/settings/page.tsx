@@ -2,7 +2,8 @@ import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { PasswordForm } from "@/components/settings/password-form"
-import { Clock, Globe, Lock, Palette, User } from "lucide-react"
+import { PushNotifications } from "@/components/settings/push-notifications"
+import { Bell, Clock, Globe, Lock, Palette, User } from "lucide-react"
 
 export default async function SettingsPage() {
   const session = await auth()
@@ -16,6 +17,10 @@ export default async function SettingsPage() {
   })
 
   if (!user) return null
+
+  const pushDeviceCount = await prisma.pushSubscription.count({
+    where: { userId },
+  })
 
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
@@ -67,11 +72,27 @@ export default async function SettingsPage() {
             Keamanan Akun
           </CardTitle>
           <CardDescription className="text-[#5A6B82]">
-            Ubah password akun Anda. Password baru minimal 6 karakter.
+            Ubah password akun Anda. Password baru minimal 8 karakter.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <PasswordForm />
+        </CardContent>
+      </Card>
+
+      {/* Notifications */}
+      <Card className="border-[#E5EAF3] bg-white shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-[#25324B] flex items-center gap-2">
+            <Bell className="w-5 h-5 text-[#2563EB]" />
+            Notifikasi Tenggat
+          </CardTitle>
+          <CardDescription className="text-[#5A6B82]">
+            Dapatkan pengingat di HP saat ada tugas dengan tenggat besok.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <PushNotifications deviceCount={pushDeviceCount} />
         </CardContent>
       </Card>
 
