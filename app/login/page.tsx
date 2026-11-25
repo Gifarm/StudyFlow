@@ -120,7 +120,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFF] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFF] px-4 py-8">
       <Suspense fallback={<div className="text-center text-[#5A6B82]">Memuat...</div>}>
         <LoginForm />
       </Suspense>

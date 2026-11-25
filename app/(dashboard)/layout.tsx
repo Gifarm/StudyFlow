@@ -63,7 +63,7 @@ export default async function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex-1 md:pl-64 flex flex-col min-h-screen">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-[#E5EAF3] px-6 flex items-center justify-between sticky top-0 z-40">
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-[#E5EAF3] bg-white px-4 sm:px-6">
           <div className="flex items-center space-x-3 md:hidden">
             <MobileNav logoutAction={handleSignOut} isAdmin={isAdmin} />
             <span className="text-lg font-bold text-[#25324B]">StudyFlow</span>
@@ -79,7 +79,7 @@ export default async function DashboardLayout({
                   ? `${tomorrowCount} tugas dengan tenggat besok`
                   : "Tidak ada tenggat besok"
               }
-              className="relative inline-flex size-9 items-center justify-center rounded-full text-[#5A6B82] transition-colors hover:bg-[#EAF3FF] hover:text-[#2563EB]"
+              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-[#5A6B82] transition-colors hover:bg-[#EAF3FF] hover:text-[#2563EB] md:h-9 md:w-9"
             >
               <Bell className="w-5 h-5" />
               {tomorrowCount > 0 && (
@@ -95,7 +95,7 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 md:p-8">
+        <main className="flex-1 p-4 sm:p-6 md:p-8">
           {children}
         </main>
       </div>

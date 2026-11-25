@@ -261,7 +261,7 @@ export function PushNotifications({ deviceCount }: { deviceCount: number }) {
             status === "unconfigured" ||
             status === "denied"
           }
-          className="bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
+          className="w-full bg-[#2563EB] text-white hover:bg-[#1D4ED8] sm:w-auto"
         >
           {busy ? (
             <Loader2 className="mr-2 size-4 animate-spin" />

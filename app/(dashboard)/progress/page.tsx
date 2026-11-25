@@ -87,14 +87,14 @@ export default async function ProgressPage() {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-[#5A6B82]">Tingkat Penyelesaian</CardTitle>
             <TrendingUp className="w-4 h-4 text-[#276749]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#25324B]">{completionRate}%</div>
+            <div className="text-2xl font-bold text-[#25324B] sm:text-3xl">{completionRate}%</div>
             <p className="text-xs text-[#5A6B82] mt-1">Dari total {totalTasks} tugas</p>
           </CardContent>
         </Card>
@@ -105,7 +105,7 @@ export default async function ProgressPage() {
             <CheckSquare className="w-4 h-4 text-[#2563EB]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#25324B]">{completedTasks}</div>
+            <div className="text-2xl font-bold text-[#25324B] sm:text-3xl">{completedTasks}</div>
             <p className="text-xs text-[#276749] font-medium mt-1">Tugas berhasil diselesaikan</p>
           </CardContent>
         </Card>
@@ -116,7 +116,7 @@ export default async function ProgressPage() {
             <Clock className="w-4 h-4 text-[#FFD166]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#25324B]">{incompleteTasks}</div>
+            <div className="text-2xl font-bold text-[#25324B] sm:text-3xl">{incompleteTasks}</div>
             <p className="text-xs text-[#5A6B82] mt-1">
               {todoTasks} belum dikerjakan · {inProgressTasks} dikerjakan
             </p>
@@ -129,13 +129,13 @@ export default async function ProgressPage() {
             <AlertCircle className="w-4 h-4 text-[#EF4444]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-[#25324B]">{overdueTasks}</div>
+            <div className="text-2xl font-bold text-[#25324B] sm:text-3xl">{overdueTasks}</div>
             <p className="text-xs text-[#EF4444] font-medium mt-1">Melewati tenggat</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
         {/* Status Breakdown */}
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader>
@@ -173,7 +173,7 @@ export default async function ProgressPage() {
             <CardTitle className="text-lg font-bold text-[#25324B]">Ringkasan Minggu Ini</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className="rounded-xl border border-[#E5EAF3] bg-[#F8FAFF] p-4">
                 <div className="text-xs font-medium text-[#5A6B82]">Diselesaikan</div>
                 <div className="text-2xl font-bold text-[#276749]">{weeklyCompleted}</div>
@@ -186,12 +186,12 @@ export default async function ProgressPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between rounded-xl border border-[#E5EAF3] p-4 text-sm">
-              <span className="flex items-center gap-2 text-[#5A6B82]">
-                <FileText className="w-4 h-4 text-[#A78BFA]" />
-                Total catatan belajar
+            <div className="flex items-center justify-between gap-3 rounded-xl border border-[#E5EAF3] p-4 text-sm">
+              <span className="flex min-w-0 items-center gap-2 text-[#5A6B82]">
+                <FileText className="h-4 w-4 shrink-0 text-[#A78BFA]" />
+                <span className="truncate">Total catatan belajar</span>
               </span>
-              <span className="font-semibold text-[#25324B]">{notesCount}</span>
+              <span className="shrink-0 font-semibold text-[#25324B]">{notesCount}</span>
             </div>
 
             <div className="p-4 bg-[#F8FAFF] rounded-xl border border-[#E5EAF3] space-y-2">

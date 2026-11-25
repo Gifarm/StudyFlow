@@ -111,33 +111,38 @@ export default async function CalendarPage({
           <h1 className="text-2xl font-bold text-[#25324B]">Kalender & Agenda</h1>
           <p className="text-[#5A6B82] text-sm">Lihat tenggat tugas dalam tampilan bulanan.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="outline" size="icon" className="border-[#E5EAF3]">
-            <Link href={`/calendar?month=${monthKey(prevMonth)}`} aria-label="Bulan sebelumnya">
-              <ChevronLeft className="w-4 h-4" />
-            </Link>
-          </Button>
-          <span className="min-w-[160px] text-center text-sm font-semibold text-[#25324B] capitalize">
-            {monthLabel}
-          </span>
-          <Button asChild variant="outline" size="icon" className="border-[#E5EAF3]">
-            <Link href={`/calendar?month=${monthKey(nextMonth)}`} aria-label="Bulan berikutnya">
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </Button>
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap">
+          <div className="flex flex-1 items-center gap-2 sm:flex-none">
+            <Button asChild variant="outline" size="icon" className="border-[#E5EAF3]">
+              <Link href={`/calendar?month=${monthKey(prevMonth)}`} aria-label="Bulan sebelumnya">
+                <ChevronLeft className="w-4 h-4" />
+              </Link>
+            </Button>
+            <span className="min-w-0 flex-1 text-center text-sm font-semibold capitalize text-[#25324B] sm:min-w-[160px] sm:flex-none">
+              {monthLabel}
+            </span>
+            <Button asChild variant="outline" size="icon" className="border-[#E5EAF3]">
+              <Link href={`/calendar?month=${monthKey(nextMonth)}`} aria-label="Bulan berikutnya">
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
           {!isCurrentMonth && (
-            <Button asChild variant="ghost" className="text-[#2563EB]">
+            <Button asChild variant="ghost" className="w-full text-[#2563EB] sm:w-auto">
               <Link href="/calendar">Bulan ini</Link>
             </Button>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-2">
-          <Card className="border-[#E5EAF3] bg-white shadow-sm overflow-hidden">
+          <p className="mb-2 text-xs text-[#5A6B82] lg:hidden">
+            Geser kalender ke samping untuk melihat seluruh minggu.
+          </p>
+          <Card className="overflow-hidden border-[#E5EAF3] bg-white shadow-sm">
             <div className="overflow-x-auto">
-              <div className="min-w-[560px]">
+              <div className="min-w-[520px]">
                 <div className="grid grid-cols-7 border-b border-[#E5EAF3] bg-[#F8FAFF]">
                   {weekdayLabels.map((label) => (
                     <div
@@ -152,7 +157,7 @@ export default async function CalendarPage({
               {Array.from({ length: leadingBlanks }).map((_, index) => (
                 <div
                   key={`blank-start-${index}`}
-                  className="min-h-[96px] border-b border-r border-[#E5EAF3] bg-[#F8FAFF]"
+                  className="min-h-[72px] border-b border-r border-[#E5EAF3] bg-[#F8FAFF] sm:min-h-[96px]"
                 />
               ))}
               {Array.from({ length: daysInMonth }).map((_, index) => {
@@ -164,7 +169,7 @@ export default async function CalendarPage({
                 return (
                   <div
                     key={day}
-                    className={`min-h-[96px] border-b border-r border-[#E5EAF3] p-1.5 align-top ${
+                    className={`min-h-[72px] border-b border-r border-[#E5EAF3] p-1.5 align-top sm:min-h-[96px] ${
                       isToday ? "bg-[#EAF3FF]/60" : "bg-white"
                     }`}
                   >
@@ -203,7 +208,7 @@ export default async function CalendarPage({
               {Array.from({ length: trailingBlanks }).map((_, index) => (
                 <div
                   key={`blank-end-${index}`}
-                  className="min-h-[96px] border-b border-r border-[#E5EAF3] bg-[#F8FAFF]"
+                  className="min-h-[72px] border-b border-r border-[#E5EAF3] bg-[#F8FAFF] sm:min-h-[96px]"
                 />
               ))}
                 </div>
@@ -311,7 +316,7 @@ export default async function CalendarPage({
                     </p>
                   )}
                 </div>
-                <div className="flex items-center space-x-1 text-xs text-[#2563EB] bg-[#EAF3FF] px-3 py-1.5 rounded-md font-medium shrink-0">
+                <div className="flex shrink-0 items-center space-x-1 self-start rounded-md bg-[#EAF3FF] px-3 py-1.5 text-xs font-medium text-[#2563EB]">
                   <Clock className="w-3.5 h-3.5" />
                   <span>
                     {task.deadline

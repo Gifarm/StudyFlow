@@ -44,7 +44,7 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#EAF3FF] text-[#2563EB] flex items-center justify-center text-xl font-bold">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#EAF3FF] text-xl font-bold text-[#2563EB]">
               {user.name?.[0]?.toUpperCase() || "U"}
             </div>
             <div>
@@ -113,7 +113,7 @@ export default async function SettingsPage() {
               <Globe className="w-4 h-4 text-[#5A6B82]" />
               Bahasa
             </div>
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="rounded-full bg-[#EAF3FF] px-3 py-1 font-medium text-[#2563EB]">
                 Bahasa Indonesia
               </span>
@@ -128,7 +128,7 @@ export default async function SettingsPage() {
               <Palette className="w-4 h-4 text-[#5A6B82]" />
               Tema
             </div>
-            <div className="flex items-center gap-2 text-sm">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
               <span className="rounded-full bg-[#EAF3FF] px-3 py-1 font-medium text-[#2563EB]">
                 Terang (default)
               </span>
@@ -162,7 +162,7 @@ export default async function SettingsPage() {
           <button
             type="button"
             disabled
-            className="inline-flex items-center rounded-md border border-red-200 px-4 py-2 text-sm font-medium text-red-400 opacity-60 cursor-not-allowed"
+            className="inline-flex h-11 w-full cursor-not-allowed items-center justify-center rounded-lg border border-red-200 px-4 text-sm font-medium text-red-400 opacity-60 sm:w-auto"
             title="Belum tersedia"
           >
             Hapus Akun

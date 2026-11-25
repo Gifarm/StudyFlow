@@ -3,6 +3,13 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { createTask, toggleTaskStatus } from "../actions"
 import {
   AlertCircle,
@@ -126,8 +133,8 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] rounded-2xl p-6 md:p-8 text-white shadow-sm">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">
+      <div className="rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] p-5 text-white shadow-sm sm:p-6 md:p-8">
+        <h1 className="mb-2 text-xl font-bold sm:text-2xl md:text-3xl">
           Halo, {session.user?.name || "Pengguna"}! 👋
         </h1>
         <p className="text-[#EAF3FF] max-w-xl text-sm md:text-base">
@@ -168,7 +175,7 @@ export default async function DashboardPage() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <Card className="border-[#E5EAF3] bg-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-[#5A6B82]">Total Tugas</CardTitle>
@@ -225,7 +232,10 @@ export default async function DashboardPage() {
                 <CalendarDays className="w-5 h-5 text-[#2563EB]" />
                 Tugas Hari Ini
               </CardTitle>
-              <Link href="/tasks" className="text-sm font-medium text-[#2563EB] hover:underline">
+              <Link
+                href="/tasks"
+                className="shrink-0 text-xs font-medium text-[#2563EB] hover:underline sm:text-sm"
+              >
                 Lihat Semua →
               </Link>
             </CardHeader>
@@ -369,16 +379,16 @@ export default async function DashboardPage() {
                     <label className="text-sm font-medium text-[#25324B]" htmlFor="priority">
                       Prioritas
                     </label>
-                    <select
-                      id="priority"
-                      name="priority"
-                      defaultValue="MEDIUM"
-                      className="w-full h-10 px-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
-                    >
-                      <option value="LOW">Rendah</option>
-                      <option value="MEDIUM">Sedang</option>
-                      <option value="HIGH">Tinggi</option>
-                    </select>
+                    <Select name="priority" defaultValue="MEDIUM">
+                      <SelectTrigger id="priority">
+                        <SelectValue placeholder="Pilih prioritas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="LOW">Rendah</SelectItem>
+                        <SelectItem value="MEDIUM">Sedang</SelectItem>
+                        <SelectItem value="HIGH">Tinggi</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Button type="submit" className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
                     <Plus className="w-4 h-4 mr-2" /> Tambah Tugas

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { createNote, removeNote, updateNote } from "../actions"
 import { Search, Plus } from "lucide-react"
 import { Prisma } from "@prisma/client"
@@ -69,17 +70,20 @@ export default async function NotesPage({
               <label className="text-sm font-medium text-[#25324B]" htmlFor="content">
                 Isi Catatan
               </label>
-              <textarea
+              <Textarea
                 id="content"
                 name="content"
                 required
                 rows={4}
                 placeholder="Tulis ringkasan atau catatan di sini..."
-                className="w-full p-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
+                className="min-h-[120px]"
               />
             </div>
-            <Button type="submit" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
-              <Plus className="w-4 h-4 mr-2" /> Simpan Catatan
+            <Button
+              type="submit"
+              className="w-full bg-[#2563EB] text-white hover:bg-[#1D4ED8] sm:w-auto"
+            >
+              <Plus className="mr-2 w-4 h-4" /> Simpan Catatan
             </Button>
           </form>
         </CardContent>
@@ -89,23 +93,30 @@ export default async function NotesPage({
       <form
         method="GET"
         action="/notes"
-        className="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-xl border border-[#E5EAF3] shadow-sm"
+        className="flex flex-col gap-3 rounded-xl border border-[#E5EAF3] bg-white p-4 shadow-sm sm:flex-row"
       >
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-[#5A6B82] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5A6B82]" />
           <Input
             name="q"
             defaultValue={searchQuery}
             placeholder="Cari judul atau isi catatan..."
-            className="pl-9 border-[#E5EAF3] focus-visible:ring-[#4F8EF7]"
+            className="pl-9"
           />
         </div>
         <div className="flex gap-2">
-          <Button type="submit" className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white">
+          <Button
+            type="submit"
+            className="flex-1 bg-[#2563EB] text-white hover:bg-[#1D4ED8] sm:flex-none"
+          >
             Cari
           </Button>
           {searchQuery && (
-            <Button asChild variant="outline" className="border-[#E5EAF3] text-[#5A6B82]">
+            <Button
+              asChild
+              variant="outline"
+              className="flex-1 border-[#E5EAF3] text-[#5A6B82] sm:flex-none"
+            >
               <Link href="/notes">Reset</Link>
             </Button>
           )}
@@ -115,9 +126,9 @@ export default async function NotesPage({
       <p className="text-sm text-[#5A6B82]">{notes.length} catatan ditemukan</p>
 
       {/* Notes Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
         {notes.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-[#5A6B82] bg-white rounded-xl border border-[#E5EAF3]">
+          <div className="col-span-full rounded-xl border border-[#E5EAF3] bg-white p-8 text-center text-[#5A6B82] sm:py-12">
             <p>
               {searchQuery
                 ? "Tidak ada catatan yang cocok dengan pencarian."

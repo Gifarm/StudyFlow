@@ -6,6 +6,14 @@ import { Clock, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ConfirmButton } from "@/components/ui/confirm-button"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 
 export type TaskItemData = {
   id: string
@@ -46,9 +54,6 @@ const statusStyles: Record<TaskItemData["status"], string> = {
   IN_PROGRESS: "bg-[#FFF6D9] text-[#8A5A0A]",
   COMPLETED: "bg-[#E7FAF2] text-[#276749]",
 }
-
-const selectClassName =
-  "w-full h-10 px-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
 
 export function TaskItem({
   task,
@@ -96,26 +101,26 @@ export function TaskItem({
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 self-end sm:self-start shrink-0">
+        <div className="flex w-full items-center gap-2 sm:w-auto sm:shrink-0">
           <Button
             type="button"
             size="sm"
             variant="outline"
             onClick={() => setIsEditing((value) => !value)}
-            className="border-[#E5EAF3] text-[#25324B]"
+            className="flex-1 border-[#E5EAF3] text-[#25324B] sm:flex-none"
           >
             <Pencil className="w-4 h-4" />
             {isEditing ? "Tutup" : "Edit"}
           </Button>
 
-          <form action={toggleAction}>
+          <form action={toggleAction} className="flex-1 sm:flex-none">
             <Button
               size="sm"
               variant={task.status === "COMPLETED" ? "outline" : "default"}
               className={
                 task.status === "COMPLETED"
-                  ? "border-[#E5EAF3] text-[#5A6B82]"
-                  : "bg-[#2F855A] hover:bg-[#276749] text-white"
+                  ? "w-full border-[#E5EAF3] text-[#5A6B82]"
+                  : "w-full bg-[#2F855A] text-white hover:bg-[#276749]"
               }
             >
               {task.status === "COMPLETED" ? "Belum Selesai" : "Tandai Selesai"}
@@ -140,9 +145,9 @@ export function TaskItem({
         <form
           action={updateAction}
           onSubmit={() => setIsEditing(false)}
-          className="mt-4 pt-4 border-t border-[#E5EAF3] grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
+          className="mt-4 grid grid-cols-1 items-end gap-4 border-t border-[#E5EAF3] pt-4 sm:grid-cols-2 md:grid-cols-4"
         >
-          <div className="space-y-2 md:col-span-2">
+          <div className="space-y-2 sm:col-span-2 md:col-span-2">
             <label
               className="text-sm font-medium text-[#25324B]"
               htmlFor={`edit-title-${task.id}`}
@@ -179,31 +184,30 @@ export function TaskItem({
             >
               Prioritas
             </label>
-            <select
-              id={`edit-priority-${task.id}`}
-              name="priority"
-              defaultValue={task.priority}
-              className={selectClassName}
-            >
-              <option value="LOW">Rendah</option>
-              <option value="MEDIUM">Sedang</option>
-              <option value="HIGH">Tinggi</option>
-            </select>
+            <Select name="priority" defaultValue={task.priority}>
+              <SelectTrigger id={`edit-priority-${task.id}`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="LOW">Rendah</SelectItem>
+                <SelectItem value="MEDIUM">Sedang</SelectItem>
+                <SelectItem value="HIGH">Tinggi</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="space-y-2 md:col-span-3">
+          <div className="space-y-2 sm:col-span-2 md:col-span-3">
             <label
               className="text-sm font-medium text-[#25324B]"
               htmlFor={`edit-description-${task.id}`}
             >
               Deskripsi (Opsional)
             </label>
-            <textarea
+            <Textarea
               id={`edit-description-${task.id}`}
               name="description"
               rows={2}
               defaultValue={task.description ?? ""}
               placeholder="Detail atau catatan tambahan..."
-              className="w-full p-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
             />
           </div>
           <div className="space-y-2">
@@ -213,18 +217,18 @@ export function TaskItem({
             >
               Status
             </label>
-            <select
-              id={`edit-status-${task.id}`}
-              name="status"
-              defaultValue={task.status}
-              className={selectClassName}
-            >
-              <option value="TODO">Belum Dikerjakan</option>
-              <option value="IN_PROGRESS">Dikerjakan</option>
-              <option value="COMPLETED">Selesai</option>
-            </select>
+            <Select name="status" defaultValue={task.status}>
+              <SelectTrigger id={`edit-status-${task.id}`}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="TODO">Belum Dikerjakan</SelectItem>
+                <SelectItem value="IN_PROGRESS">Dikerjakan</SelectItem>
+                <SelectItem value="COMPLETED">Selesai</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="md:col-span-4 flex flex-col sm:flex-row sm:justify-end gap-2">
+          <div className="flex flex-col gap-2 sm:col-span-2 sm:flex-row sm:justify-end md:col-span-4">
             <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
               Batal
             </Button>

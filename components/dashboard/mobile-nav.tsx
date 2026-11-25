@@ -35,7 +35,7 @@ export function MobileNav({
           <Menu className="w-5 h-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-72 p-0 bg-white flex flex-col">
+      <SheetContent side="left" className="flex w-[min(18rem,85vw)] flex-col bg-white p-0">
         <SheetHeader className="p-6 border-b border-[#E5EAF3] text-left">
           <SheetTitle className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-lg bg-[#2563EB] flex items-center justify-center text-white font-bold text-sm">

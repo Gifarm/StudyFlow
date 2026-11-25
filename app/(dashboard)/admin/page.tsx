@@ -173,20 +173,24 @@ export default async function AdminPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
             <Card key={stat.label} className="border-[#E5EAF3] bg-white shadow-sm">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-[#5A6B82]">{stat.label}</span>
-                  <span className={`w-9 h-9 rounded-lg ${stat.background} ${stat.color} flex items-center justify-center`}>
-                    <Icon className="w-5 h-5" />
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-[#5A6B82] sm:text-sm">{stat.label}</span>
+                  <span
+                    className={`flex size-8 shrink-0 items-center justify-center rounded-lg sm:size-9 ${stat.background} ${stat.color}`}
+                  >
+                    <Icon className="size-4 sm:size-5" />
                   </span>
                 </div>
-                <div className="mt-3 text-3xl font-bold text-[#25324B]">{stat.value}</div>
-                <p className="mt-1 text-xs text-[#5A6B82]">{stat.detail}</p>
+                <div className="mt-2 text-2xl font-bold text-[#25324B] sm:mt-3 sm:text-3xl">
+                  {stat.value}
+                </div>
+                <p className="mt-1 text-[11px] text-[#5A6B82] sm:text-xs">{stat.detail}</p>
               </CardContent>
             </Card>
           )
@@ -209,8 +213,11 @@ export default async function AdminPage() {
               <span className="w-3 h-3 rounded-sm bg-[#2F855A]" /> Tugas selesai
             </span>
           </div>
-          <div className="overflow-x-auto">
-            <div className="flex items-end gap-2 min-w-[560px] h-40">
+          <p className="mb-2 text-xs text-[#5A6B82] sm:hidden">
+            Geser ke samping untuk melihat semua hari.
+          </p>
+          <div className="overflow-x-auto pb-1">
+            <div className="flex h-40 min-w-[560px] items-end gap-2">
               {days.map((day, index) => (
                 <div key={day.key} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
                   <div className="flex items-end gap-0.5 h-full">
@@ -241,7 +248,55 @@ export default async function AdminPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Daftar kartu untuk layar kecil */}
+          <ul className="divide-y divide-[#E5EAF3] md:hidden">
+            {recentUsers.map((user) => {
+              const lastActive =
+                user.tasks[0]?.updatedAt ?? user.notes[0]?.updatedAt ?? null
+
+              return (
+                <li key={user.id} className="space-y-2.5 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EAF3FF] text-sm font-bold text-[#2563EB]">
+                        {user.name[0]?.toUpperCase()}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-[#25324B]">{user.name}</p>
+                        {user.role === "ADMIN" && (
+                          <span className="mt-0.5 inline-block rounded-full bg-[#EAF3FF] px-2 py-0.5 text-[10px] font-semibold text-[#2563EB]">
+                            ADMIN
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-[11px] text-[#5A6B82]">
+                      {formatDate(user.createdAt)}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-[#5A6B82]">
+                    <span className="rounded-md bg-[#F8FAFF] px-2 py-1">
+                      {user._count.tasks} tugas
+                    </span>
+                    <span className="rounded-md bg-[#F8FAFF] px-2 py-1">
+                      {user._count.notes} catatan
+                    </span>
+                    <span className="ml-auto max-w-full truncate">
+                      Aktif: {formatDate(lastActive)}
+                    </span>
+                  </div>
+                </li>
+              )
+            })}
+            {recentUsers.length === 0 && (
+              <li className="p-8 text-center text-sm text-[#5A6B82]">
+                Belum ada pengguna.
+              </li>
+            )}
+          </ul>
+
+          {/* Tabel untuk layar lebar */}
+          <div className="hidden overflow-x-auto md:block">
             <table className="w-full text-sm">
               <thead className="bg-[#F8FAFF] text-left text-[#5A6B82]">
                 <tr>

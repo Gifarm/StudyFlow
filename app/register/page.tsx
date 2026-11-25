@@ -44,7 +44,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFF] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#F8FAFF] px-4 py-8">
       <Card className="w-full max-w-md border-[#E5EAF3] shadow-sm bg-white">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-[#25324B]">Daftar ke StudyFlow</CardTitle>

@@ -6,6 +6,7 @@ import { FileText, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ConfirmButton } from "@/components/ui/confirm-button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export type NoteItemData = {
@@ -39,7 +40,7 @@ export function NoteItem({
             size="sm"
             variant="outline"
             onClick={() => setIsEditing((value) => !value)}
-            className="border-[#E5EAF3] text-[#25324B] h-8 px-2 shrink-0"
+            className="shrink-0 border-[#E5EAF3] px-2.5 text-[#25324B]"
           >
             <Pencil className="w-3.5 h-3.5" />
             {isEditing ? "Tutup" : "Edit"}
@@ -75,19 +76,17 @@ export function NoteItem({
               >
                 Isi Catatan
               </label>
-              <textarea
+              <Textarea
                 id={`note-content-${note.id}`}
                 name="content"
                 required
                 rows={5}
                 defaultValue={note.content}
-                className="w-full p-3 rounded-md border border-[#E5EAF3] text-sm text-[#25324B] bg-white focus:outline-none focus:ring-2 focus:ring-[#4F8EF7]"
               />
             </div>
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button
                 type="button"
-                size="sm"
                 variant="outline"
                 onClick={() => setIsEditing(false)}
               >
@@ -95,8 +94,7 @@ export function NoteItem({
               </Button>
               <Button
                 type="submit"
-                size="sm"
-                className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white"
+                className="bg-[#2563EB] text-white hover:bg-[#1D4ED8]"
               >
                 Simpan
               </Button>
@@ -116,7 +114,7 @@ export function NoteItem({
             aria-label={`Hapus catatan "${note.title}"`}
             size="sm"
             variant="outline"
-            className="border-red-200 text-red-600 hover:bg-red-50 h-8 px-2"
+            className="border-red-200 px-2.5 text-red-600 hover:bg-red-50"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </ConfirmButton>
